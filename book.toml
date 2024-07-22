@@ -1,0 +1,19 @@
+[book]
+title        = "iitiiri"
+authors      = ["Pierre Marijon"]
+description  = "Implicit Interval Tree with Interpolation Index Rust Implementation"
+language     = "en"
+multilingual = false
+src          = "website"
+
+[build]
+build-dir      = "public"
+create-missing = false
+
+[output.html]
+smart-punctuation = true
+mathjax-support = true
+git-repository-url = "https://github.com/natir/iitiiri/"
+git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/natir/iitiiri/edit/main/docs/{path}"
+site-url = "https://iitiiri.github.io/iitiiri"
