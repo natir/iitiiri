@@ -1,0 +1,71 @@
+[package]
+name    = "iitiiri"
+version = "0.1.0"
+authors = [
+	"Pierre Marijon <>"
+]
+
+description  = "Implicit Interval Tree with Interpolation Index Rust Implementation"
+edition      = "2021"
+rust-version = "1.74"
+
+homepage      = "https://natir.github.io/iitiiri"
+repository    = "https://github.com/natir/iitiiri"
+documentation = "https://natir.github.io/iitiiri"
+
+readme       = "Readme.md"
+license-file = "LICENSE"
+
+
+[lib]
+name = "iitiiri"
+path = "src/lib.rs"
+
+
+[dependencies]
+## Specific management
+num-traits = { version = "0.2" }
+linreg     = { version = "0.2" }
+
+## Parallel management
+rayon      = { version = "1", optional = true}
+
+## Error management
+thiserror  = { version = "1" }
+
+## Logging management
+log        = { version = "0.4" }
+
+
+[dev-dependencies]
+## Benchmark management
+criterion  = { version = "0.5" }
+seq-macro  = { version = "0.3.5" }
+
+## Generate value for test
+rand       = { version = "0.8" }
+
+
+[features]
+default = []
+parallel = ["dep:rayon"]
+bench = []
+
+
+[[bench]]
+name              = "iit_vs_iitii"
+required-features = ["bench"]
+harness           = false
+
+
+[profile.release]
+lto             = 'thin'
+opt-level       = 3
+overflow-checks = false
+panic           = 'abort'
+incremental     = false
+
+
+[profile.profiling]
+inherits = "release"
+debug    = true

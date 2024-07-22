@@ -1,0 +1,16 @@
+# Changes here will be overwritten by Copier
+_commit: 1.9.1
+_src_path: gh:natir/copier-rust
+author_email: pierre@marijon.fr
+author_name: Pierre Marijon
+bin: false
+copyright_date: '2024'
+copyright_holder: Pierre Marijon
+copyright_holder_email: pierre@marijon.fr
+copyright_license: MIT
+forge_namespace: natir
+forge_repo_name: iitiiri
+lib: true
+msrv: '1.74'
+project_description: Implicit Interval Tree with Interpolation Index Rust Implementation
+project_name: iitiiri
