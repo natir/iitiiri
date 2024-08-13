@@ -1,0 +1,5 @@
+### experiment ###
+experiment/*/
+
+### notebook ###
+.ipynb_checkpoints/

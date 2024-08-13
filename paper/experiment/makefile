@@ -89,6 +89,11 @@ bin/cgranges_query: cgranges cgranges_query.c
 	@mkdir -p bin
 	@cc -O2 -DNDEBUG cgranges/cgranges.c cgranges_query.c -o bin/cgranges_query
 
+bin/cgranges_annotation_variant: cgranges cgranges_annotation_variant.c
+	@mkdir -p bin
+	@cc -O2 -DNDEBUG cgranges/cgranges.c cgranges_annotation_variant.c -o bin/cgranges_annotation_variant
+
+
 # Build iitii
 iitii:
 	@curl -L https://github.com/mlin/iitii/archive/$(iitii_version).tar.gz | tar xvz
@@ -204,12 +209,14 @@ result/%_query.csv: dataset/%.bed bin/cgranges_query bin/iitii_query bin/rust_bi
 	./bin/iitiiri_parallel_query_$$d dataset/$*.bed >> $@ ; \
 	done
 
-result/annotation_variant_%.csv: dataset/hg38.bed dataset/%.bed bin/iitii_annotation_variant $(iitiiri_annotation_variant_path) $(iitiiri_annotation_variant_p_path)
+result/annotation_variant_%.csv: dataset/hg38.bed dataset/%.bed bin/cgranges_annotation_variant bin/iitii_annotation_variant $(iitiiri_annotation_variant_path) $(iitiiri_annotation_variant_p_path)
 	@mkdir -p result
 	@hyperfine --export-csv $@ \
+	-n cgranges \
 	$(iitii_hyper_name) \
 	$(iitiiri_hyper_name) \
 	$(iitiiri_hyper_p_name) \
+	"./bin/cgranges_annotation_variant dataset/hg38.bed dataset/$*.bed" \
 	$(iitii_annotation_variant_hyper_cmd) \
 	$(iitiiri_annotation_variant_hyper_cmd) \
 	$(iitiiri_annotation_variant_hyper_p_cmd) \

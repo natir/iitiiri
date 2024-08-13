@@ -3,6 +3,8 @@ name: website
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'paper/**'
 
 jobs:
   website:

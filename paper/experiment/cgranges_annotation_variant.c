@@ -32,12 +32,12 @@ inline void black_box(void* value) {
 int main(int argc, char* argv[]) {
   cgranges_t *cr = cr_init();
 
-  FILE* reader = fopen(argv[1], "r");
+  FILE* annotation = fopen(argv[1], "r");
 
   char *ctg = "2";
   char line[1024];
   char chr[1024];
-  while(fgets(line, 1024, reader)) {
+  while(fgets(line, 1024, annotation)) {
     int32_t start, end;
 
     parse_bed(line, &start, &end);
@@ -45,30 +45,24 @@ int main(int argc, char* argv[]) {
     cr_add(cr, ctg, start, end, 0);
   }
 
-  fclose(reader);
+  fclose(annotation);
 
   cr_index(cr);
 
-  size_t start_min = 0;
-  size_t start_max = 200000000;
-  size_t length_max = 2000;
-  size_t number_query = 1 << 9;
-
+  FILE* variant = fopen(argv[2], "r");
   int64_t n, *b = 0, max_b = 0;
-  for(size_t i = 0; i != number_query; i++) {
-    size_t start = rand() % (start_max - start_min + 1) + start_min;
-    size_t length = rand() % (2000 + 1);
+  while(fgets(line, 1024, variant)) {
+    int32_t start, end;
 
-    struct timespec begin;
-    struct timespec end;
-    timespec_get(&begin, TIME_UTC);
-    for (size_t i = 0; i != 100; i++) {
-      n = cr_overlap(cr, "2", start, start + length, &b, &max_b);
-      black_box(b);
-    }
-    timespec_get(&end, TIME_UTC);
-    printf("cgranges,%i,%i\n", i, end.tv_nsec - begin.tv_nsec);
+    parse_bed(line, &start, &end);
+
+    n = cr_overlap(cr, "2", start, end, &b, &max_b);
+    black_box(b);
   }
+
   free(b);
+
+  fclose(variant);
+
   cr_destroy(cr);
 }
