@@ -71,12 +71,19 @@ where
         let root_index = (1 << self.nodes.len().ilog2()) - 1;
 
         let mut subtree_index = self.estimator.guess(start, stop);
+        dbg!(subtree_index);
         while subtree_index != root_index {
             if subtree_index > self.nodes.len() {
                 subtree_index = tree_utils::parent(subtree_index);
                 continue;
             }
 
+            dbg!(
+                start,
+                stop,
+                self.nodes[subtree_index].max_end(),
+                self.min_beg(subtree_index)
+            );
             if stop < *self.nodes[subtree_index].max_end()
                 && self
                     .min_beg(subtree_index)
@@ -88,6 +95,10 @@ where
 
             subtree_index = tree_utils::parent(subtree_index);
         }
+        if subtree_index != root_index {
+            subtree_index = tree_utils::parent(subtree_index);
+        }
+        dbg!(subtree_index);
 
         self.scan(
             subtree_index,
@@ -108,28 +119,36 @@ where
         stop: P,
         result: &mut Vec<&'a O>,
     ) {
+        dbg!("SCAN CALL", subtree);
+        dbg!(start);
+        dbg!(stop);
         // Imaginary node if left exist explore it
         if subtree >= self.nodes.len() && level > 0 {
             if let Some(left_index) = tree_utils::left(subtree) {
+                dbg!("IMAGINARY RECURSION");
                 self.scan(left_index, level - 1, start, stop, result);
             }
             return;
-        }
-
-        // Low level stop recursion
-        if level <= 2 {
+        } else if level <= 2 {
+            // Low level stop recursion
+            dbg!("LOW LEVEL END");
             let level_move = (1 << level) - 1;
             let left_most = subtree.saturating_sub(level_move);
             let right_most = std::cmp::min(subtree + level_move, self.nodes.len() - 1);
-
+            dbg!(subtree, left_most, right_most);
             for index in left_most..=right_most {
+                dbg!(index);
+                dbg!(self.nodes[index].start());
+                dbg!(stop);
                 if self.nodes[index].start() >= &stop {
-                    return;
+                    break;
                 }
                 if self.nodes[index].stop() > &start {
+                    dbg!("LOW LEVEL PUSH", self.nodes[subtree].object());
                     result.push(self.nodes[index].object())
                 }
             }
+            dbg!("LOW LEVEL RETURN");
             return;
         }
 
@@ -143,10 +162,12 @@ where
 
             if self.nodes[subtree].start() < &stop {
                 if self.nodes[subtree].stop() > &start {
+                    dbg!("RECURSION PUSH", self.nodes[subtree].object());
                     result.push(self.nodes[subtree].object());
                 }
 
                 if let Some(right_index) = tree_utils::right(subtree) {
+                    dbg!("RIGHT RECURSION");
                     self.scan(right_index, local_level, start, stop, result);
                 }
             }
@@ -297,6 +318,7 @@ mod tests {
 
     /* crate use */
     use rand::Rng as _;
+    use rand::RngCore as _;
     use rand::SeedableRng as _;
 
     /* project use */
@@ -441,15 +463,14 @@ mod tests {
         );
     }
 
-    #[test]
-    fn overlap_affine() {
+    fn _overlap_affine<const N: usize>() {
         let mut data = Vec::new();
 
         for i in (50..1000).step_by(50) {
             data.push(node::Node::new_full(i, i + 50, (i, i + 50), i));
         }
 
-        let intervals = Intervals::<usize, (usize, usize), estimator::Affine<usize, 16>>::new(data);
+        let intervals = Intervals::<usize, (usize, usize), estimator::Affine<usize, N>>::new(data);
 
         assert_eq!(
             intervals.overlap(250, 500),
@@ -459,8 +480,17 @@ mod tests {
                 &(350, 400),
                 &(400, 450),
                 &(450, 500)
-            ]
+            ],
+            "intervals overlap_affine check N = {}",
+            N
         );
+    }
+
+    #[test]
+    fn overlap_affine() {
+        seq_macro::seq!(I in 1..128 {
+            _overlap_affine::<I>();
+        });
     }
 
     #[test]
@@ -521,9 +551,10 @@ mod tests {
         );
     }
 
-    #[test]
-    fn iit_equal_iitii_entropy_seed() {
+    fn _iit_equal_iitii_entropy_seed<const N: usize>() {
         let mut rng = rand::rngs::StdRng::from_entropy();
+        let seed = rng.next_u64();
+        let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
 
         let pos_range = 0..100_000;
         let range_len = 0..200;
@@ -539,12 +570,70 @@ mod tests {
             .collect::<Vec<node::Node<usize, (usize, usize)>>>();
 
         let lazy = Intervals::<usize, (usize, usize), estimator::Lazy>::new(nodes.clone());
-
         let affine = Intervals::<usize, (usize, usize), estimator::Affine<usize, 16>>::new(nodes);
 
         let a = rng.gen_range(pos_range.clone());
         let b = a + rng.gen_range(0..2000);
 
-        assert_eq!(lazy.overlap(a, b), affine.overlap(a, b))
+        assert_eq!(
+            lazy.overlap(a, b),
+            affine.overlap(a, b),
+            "interval iit_equal_iitii_entropy_seed seed: {} N: {}",
+            seed,
+            N,
+        )
+    }
+
+    #[test]
+    fn iit_equal_iitii_entropy_seed() {
+        seq_macro::seq!(I in 1..128 {
+            _iit_equal_iitii_entropy_seed::<I>();
+        });
+    }
+
+    #[test]
+    fn error() {
+        let mut rng = rand::rngs::StdRng::seed_from_u64(11497814493348450862);
+
+        let pos_range = 0..100_000;
+        let range_len = 0..200;
+        let num_interval = 500;
+
+        let nodes = (0..num_interval)
+            .map(|_| {
+                let a = rng.gen_range(pos_range.clone());
+                let b = a + rng.gen_range(range_len.clone());
+
+                node::Node::new(a, b, (a, b))
+            })
+            .collect::<Vec<node::Node<usize, (usize, usize)>>>();
+
+        let lazy = Intervals::<usize, (usize, usize), estimator::Lazy>::new(nodes.clone());
+        let affine = Intervals::<usize, (usize, usize), estimator::Affine<usize, 16>>::new(nodes);
+
+        let a = rng.gen_range(pos_range.clone());
+        let b = a + rng.gen_range(0..2000);
+
+        dbg!("LAZY");
+        assert_eq!(
+            lazy.overlap(a, b),
+            [
+                &(23513, 23706),
+                &(23873, 24018),
+                &(23883, 24063),
+                &(23892, 23908)
+            ]
+        );
+        println!("\n\n\n");
+        dbg!("AFFINE");
+        assert_eq!(
+            affine.overlap(a, b),
+            [
+                &(23513, 23706),
+                &(23873, 24018),
+                &(23883, 24063),
+                &(23892, 23908)
+            ]
+        );
     }
 }

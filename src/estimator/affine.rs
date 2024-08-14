@@ -328,11 +328,19 @@ mod tests {
             data.push(node::Node::new_full(i, i + 50, true, i));
         }
 
-        let estimator = Affine::<usize, 4>::train(&data);
+        let truth = vec![
+            15, 15, 15, 15, 15, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9,
+            9, 9, 9, 9, 8,
+        ];
+
+        seq_macro::seq!(N in 1..32 {
+        let estimator = Affine::<usize, N>::train(&data);
 
         assert_eq!(
-            <Affine<usize, 4> as Estimator<usize, bool>>::guess(&estimator, 500, 150),
-            15
-        )
+            <Affine<usize, N> as Estimator<usize, bool>>::guess(&estimator, 500, 150),
+            truth[N],
+            "estimator::affine check N = {}", N
+        );
+        });
     }
 }

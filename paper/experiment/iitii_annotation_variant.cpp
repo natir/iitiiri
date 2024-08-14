@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
   p_iitii db = br.build(domain);
 
   std::vector<const intpair*> results;
-  while(std::getline(annotation, line)) {
+  while(std::getline(variant, line)) {
     int32_t start, end;
 
     parse_bed(line.data(), &start, &end);

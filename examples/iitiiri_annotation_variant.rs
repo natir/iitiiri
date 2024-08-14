@@ -60,7 +60,8 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        criterion::black_box(iitii.overlap(start, stop));
+        let results = iitii.overlap(start, stop);
+        criterion::black_box(results);
 
         line.clear();
     }
