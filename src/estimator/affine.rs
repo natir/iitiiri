@@ -380,7 +380,6 @@ where
         while subtree_index != root_index {
             if subtree_index >= nodes.len() {
                 subtree_index = tree_utils::parent(subtree_index);
-                dbg!(subtree_index);
                 continue;
             }
 
