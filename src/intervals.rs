@@ -189,7 +189,23 @@ where
                 let child = match (left, right) {
                     (Some(l), Some(r)) => *std::cmp::max(l, r),
                     (None, Some(r)) => *r,
-                    (Some(l), None) => *l,
+                    (Some(l), None) => {
+                        if level > 1 {
+                            match self
+                                .nodes
+                                .get(tree_utils::left_uncheck(
+                                    tree_utils::right_uncheck(index, level),
+                                    level - 1,
+                                ))
+                                .map(node::Node::max_end)
+                            {
+                                Some(rr) => *std::cmp::max(l, rr),
+                                None => *l,
+                            }
+                        } else {
+                            *l
+                        }
+                    }
                     _ => num_traits::identities::zero(),
                 };
 
@@ -254,7 +270,23 @@ where
                     let child = match (left, right) {
                         (Some(l), Some(r)) => *std::cmp::max(l, r),
                         (None, Some(r)) => *r,
-                        (Some(l), None) => *l,
+                        (Some(l), None) => {
+                            if level > 1 {
+                                match self
+                                    .nodes
+                                    .get(tree_utils::left_uncheck(
+                                        tree_utils::right_uncheck(index, level),
+                                        level - 1,
+                                    ))
+                                    .map(node::Node::max_end)
+                                {
+                                    Some(rr) => *std::cmp::max(l, rr),
+                                    None => *l,
+                                }
+                            } else {
+                                *l
+                            }
+                        }
                         _ => num_traits::identities::zero(),
                     };
                     (index, std::cmp::max(child, local))
@@ -328,7 +360,7 @@ mod tests {
                 .map(node::Node::max_end)
                 .cloned()
                 .collect::<Vec<usize>>(),
-            vec![150, 300, 300, 350, 250, 350, 300, 350, 450, 450]
+            vec![150, 300, 300, 350, 250, 350, 300, 450, 450, 450]
         );
     }
 
@@ -526,7 +558,7 @@ mod tests {
             .collect::<Vec<node::Node<usize, (usize, usize)>>>();
 
         let lazy = Intervals::<usize, (usize, usize), estimator::Lazy>::new(nodes.clone());
-        let affine = Intervals::<usize, (usize, usize), estimator::Affine<usize, 16>>::new(nodes);
+        let affine = Intervals::<usize, (usize, usize), estimator::Affine<usize, N>>::new(nodes);
 
         let a = rng.gen_range(pos_range.clone());
         let b = a + rng.gen_range(0..2000);
