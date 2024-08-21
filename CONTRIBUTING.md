@@ -2,12 +2,12 @@
 
 Contributions are welcome, and they are greatly appreciated! Every little bit helps, and credit will always be given.
 
-Keep in mind as you contribute, that code, docs and other material submitted to this projects are considered licensed under  license.
+Keep in mind as you contribute, that code, docs and other material submitted to this projects are considered licensed under MIT license.
 
 ## Setup developement environment
 
 We recommand to install rust with [rustup](https://rustup.rs/).
-If you want perform a documentation contribution install [mdbook](https://rust-lang.github.io/mdBook/guide/installation.html).
+If you want perform a manual contribution install [mdbook](https://rust-lang.github.io/mdBook/guide/installation.html).
 
 ## Contribution
 
@@ -25,13 +25,14 @@ Before submit pull request make sure you run:
 cargo fmt
 cargo clippy
 cargo test
+cargo test --features parallel
 ```
 
 You can check your new code are covered by run:
 ```bash
 cargo tarpaulin
 ```
-And open `target/coverage/tarpaulin-report.html`
+And open `website/tarpaulin-report.html`
 
 ### Documentation pull request
 
@@ -45,6 +46,9 @@ And open `target/doc/iitiiri/index.html` to check effect of your change.
 
 After change you can run:
 ```
+cargo tarpaulin
+cargo doc --target-dir website
 mdbook serve
 ```
+
 To check effect of your change.

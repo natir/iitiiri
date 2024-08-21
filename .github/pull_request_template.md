@@ -15,9 +15,7 @@ Please delete options that are not relevant.
 
 # Checklist:
 
-- [ ] I run `cargo fmt`
-- [ ] I run `cargo clippy`
-- [ ] I run `cargo test`
+- [ ] I follow recomandation of [Contributing](https://natir.github.io/iitiiri/contributing.html)
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] New and existing unit tests pass locally with my changes
