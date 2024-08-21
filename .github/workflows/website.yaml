@@ -28,7 +28,7 @@ jobs:
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin
       - name: Build test coverage page
-        run: cargo tarpaulin --workspace --all-features
+        run: cargo tarpaulin
       - name: Build dev documentation
         run: cargo doc --target-dir website
       - name: Run mdbook

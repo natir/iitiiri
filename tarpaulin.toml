@@ -1,3 +1,6 @@
+[parallel]
+features = "parallel"
+
 [default]
 engine = "Llvm"
 
