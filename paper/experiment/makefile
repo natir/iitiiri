@@ -29,6 +29,25 @@ iitiiri_build_hyper_p_cmd = $(shell echo $(iitiiri_build_p_path) | awk -v RS=' '
 iitiiri_annotation_variant_hyper_cmd = $(shell echo $(iitiiri_build_path) | awk -v RS=' ' '{print "\""$$1" dataset/hg38.bed dataset/$*.bed\""}')
 iitiiri_annotation_variant_hyper_p_cmd = $(shell echo $(iitiiri_build_p_path) | awk -v RS=' ' '{print "\""$$1" dataset/hg38.bed dataset/$*.bed\""}')
 
+thread_effect_hyper_name_0 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_0"}')
+thread_effect_hyper_cmd_0 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=1 ./bin/iitiiri_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_1 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_1"}')
+thread_effect_hyper_cmd_1 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=1 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_2 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_2"}')
+thread_effect_hyper_cmd_2 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=2 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_3 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_3"}')
+thread_effect_hyper_cmd_3 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=3 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_4 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_4"}')
+thread_effect_hyper_cmd_4 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=4 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_5 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_5"}')
+thread_effect_hyper_cmd_5 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=5 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_6 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_6"}')
+thread_effect_hyper_cmd_6 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=6 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_7 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_7"}')
+thread_effect_hyper_cmd_7 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=7 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+thread_effect_hyper_name_8 = $(shell echo $(domain) | awk -v RS=' ' '{print "-n parallel_"$$1"_8"}')
+thread_effect_hyper_cmd_8 = $(shell echo $(domain) | awk -v RS=' ' '{print "\"RAYON_NUM_THREADS=8 ./bin/iitiiri_parallel_build_"$$1" dataset/$*.bed\""}')
+
 
 all: benchmark
 
@@ -176,7 +195,7 @@ bin/iitiiri_parallel_annotation_variant_%: ../../examples/iitiiri_annotation_var
 	@cp ../../target/release/examples/iitiiri_annotation_variant $@
 
 # Benchmark rule
-result/%_build.csv: dataset/%.bed bin/cgranges_build bin/iitii_build bin/rust_bio_build bin/iitri_build bin/iitri_parallel_build $(iitiiri_build_path) $(iitiiri_build_p_path)
+result/build_%.csv: dataset/%.bed bin/cgranges_build bin/iitii_build bin/rust_bio_build bin/iitri_build bin/iitri_parallel_build $(iitiiri_build_path) $(iitiiri_build_p_path)
 	@mkdir -p result
 	@hyperfine --export-csv $@ \
 	-n cgranges \
@@ -192,7 +211,7 @@ result/%_build.csv: dataset/%.bed bin/cgranges_build bin/iitii_build bin/rust_bi
 	$(iitiiri_build_hyper_cmd) \
 	$(iitiiri_build_hyper_p_cmd)
 
-result/%_query.csv: dataset/%.bed bin/cgranges_query bin/iitii_query bin/rust_bio_query bin/iitri_query bin/iitri_parallel_query $(iitiiri_query_path) $(iitiiri_query_p_path)
+result/query_%.csv: dataset/%.bed bin/cgranges_query bin/iitii_query bin/rust_bio_query bin/iitri_query bin/iitri_parallel_query $(iitiiri_query_path) $(iitiiri_query_p_path)
 	@mkdir -p result
 	@echo "command,index,time" > $@
 	@./bin/cgranges_query dataset/$*.bed >> $@
@@ -221,13 +240,25 @@ result/annotation_variant_%.csv: dataset/hg38.bed dataset/%.bed bin/cgranges_ann
 	$(iitiiri_annotation_variant_hyper_cmd) \
 	$(iitiiri_annotation_variant_hyper_p_cmd) \
 
-benchmark_build: result/clinvar_build.csv result/gnomad_build.csv result/hg38_build.csv result/hg001_build.csv result/hg002_build.csv result/hg003_build.csv result/hg004_build.csv result/hg006_build.csv result/hg007_build.csv result/combine_shuffle_build.csv
+result/thread_effect_%.csv: dataset/%.bed $(iitiiri_build_path) $(iitiiri_build_p_path)
+	@mkdir -p result
+	@hyperfine --export-csv $@ \
+	$(thread_effect_hyper_name_0) \
+	$(thread_effect_hyper_name_1) $(thread_effect_hyper_name_2) $(thread_effect_hyper_name_3) $(thread_effect_hyper_name_4) $(thread_effect_hyper_name_5) $(thread_effect_hyper_name_6) $(thread_effect_hyper_name_7) $(thread_effect_hyper_name_8) \
+	$(thread_effect_hyper_cmd_0) \
+	$(thread_effect_hyper_cmd_1) $(thread_effect_hyper_cmd_2) $(thread_effect_hyper_cmd_3) $(thread_effect_hyper_cmd_4) $(thread_effect_hyper_cmd_5) $(thread_effect_hyper_cmd_6) $(thread_effect_hyper_cmd_7) $(thread_effect_hyper_cmd_8) \
 
-benchmark_query: result/clinvar_query.csv result/gnomad_query.csv result/hg38_query.csv result/hg001_query.csv result/hg002_query.csv result/hg003_query.csv result/hg004_query.csv result/hg006_query.csv result/hg007_query.csv result/combine_shuffle_query.csv
+
+benchmark_build: result/build_clinvar.csv result/build_gnomad.csv result/build_hg38.csv result/build_hg001.csv result/build_hg002.csv result/build_hg003.csv result/build_hg004.csv result/build_hg006.csv result/build_hg007.csv result/build_combine_shuffle.csv
+
+benchmark_query: result/query_clinvar.csv result/query_gnomad.csv result/query_hg38.csv result/query_hg001.csv result/query_hg002.csv result/query_hg003.csv result/query_hg004.csv result/query_hg006.csv result/query_hg007.csv result/query_combine_shuffle.csv
 
 benchmark_annotation_variant: result/annotation_variant_clinvar.csv result/annotation_variant_gnomad.csv result/annotation_variant_hg001.csv result/annotation_variant_hg002.csv result/annotation_variant_hg003.csv result/annotation_variant_hg004.csv result/annotation_variant_hg006.csv result/annotation_variant_hg007.csv
 
-benchmark: benchmark_build benchmark_query benchmark_annotation_variant
+benchmark_thread_effect: result/thread_effect_clinvar.csv result/thread_effect_gnomad.csv result/thread_effect_hg001.csv result/thread_effect_hg002.csv result/thread_effect_hg003.csv result/thread_effect_hg004.csv result/thread_effect_hg006.csv result/thread_effect_hg007.csv result/thread_effect_combine_shuffle.csv
+
+
+benchmark: benchmark_build benchmark_query benchmark_annotation_variant benchmark_thread_effect
 
 # Util rule
 clean: clean_data clean_dependency clean_bin clean_result
