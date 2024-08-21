@@ -264,29 +264,36 @@ where
         levels: &mut [usize; N],
         tree_depth: usize,
     ) {
-        for domain in 0..N {
-            if let Some((_, local_a, local_b, level)) = AFFINE_TRAIN_LEVEL
-                .par_iter()
-                .filter(|&&level| AFFINE_TRAIN_LEVEL2INDEX[level].is_some())
-                .map(|&level| {
-                    let level_index = AFFINE_TRAIN_LEVEL2INDEX[level].unwrap();
+        let tmp = (0..N)
+            .into_par_iter()
+            .map(|domain| {
+                if let Some((_, local_a, local_b, level)) = AFFINE_TRAIN_LEVEL
+                    .par_iter()
+                    .filter(|&&level| AFFINE_TRAIN_LEVEL2INDEX[level].is_some())
+                    .map(|&level| {
+                        let level_index = AFFINE_TRAIN_LEVEL2INDEX[level].unwrap();
 
-                    let target = &d2l2bi[domain][level_index];
+                        let target = &d2l2bi[domain][level_index];
 
-                    if level >= tree_depth || target.len() <= 1 {
-                        (f64::MAX, 0.0, 0.0, level)
-                    } else {
-                        Self::level2affine(outside_max_end, target, level, tree_depth)
-                    }
-                })
-                .min_by(|x, y| x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal))
-            {
-                a[domain] = local_a;
-                b[domain] = local_b;
-                levels[domain] = level;
-            } else {
-                unreachable!();
-            }
+                        if level >= tree_depth || target.len() <= 1 {
+                            (f64::MAX, 0.0, 0.0, level)
+                        } else {
+                            Self::level2affine(outside_max_end, target, level, tree_depth)
+                        }
+                    })
+                    .min_by(|x, y| x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal))
+                {
+                    (domain, local_a, local_b, level)
+                } else {
+                    unreachable!()
+                }
+            })
+            .collect::<Vec<(usize, f64, f64, usize)>>();
+
+        for (domain, local_a, local_b, level) in tmp {
+            a[domain] = local_a;
+            b[domain] = local_b;
+            levels[domain] = level;
         }
     }
 }
