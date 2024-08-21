@@ -7,7 +7,7 @@ authors = [
 
 description  = "Implicit Interval Tree with Interpolation Index Rust Implementation"
 edition      = "2021"
-rust-version = "1.74"
+rust-version = "1.67"
 
 homepage      = "https://natir.github.io/iitiiri"
 repository    = "https://github.com/natir/iitiiri"
@@ -51,7 +51,6 @@ rand          = { version = "0.8", features = ["small_rng"] }
 [features]
 default = []
 parallel = ["dep:rayon"]
-unchecked = []
 bench = []
 
 
