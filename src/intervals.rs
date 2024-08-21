@@ -68,26 +68,8 @@ where
     /// Return object of overlap query
     pub fn overlap(&self, start: P, stop: P) -> Vec<&O> {
         let mut result = Vec::new();
-        let root_index = (1 << self.nodes.len().ilog2()) - 1;
 
-        let mut subtree_index = self.estimator.guess(start, stop);
-        while subtree_index != root_index {
-            if subtree_index > self.nodes.len() {
-                subtree_index = tree_utils::parent(subtree_index);
-                continue;
-            }
-
-            if stop < *self.nodes[subtree_index].max_end()
-                && self
-                    .min_beg(subtree_index)
-                    .map(|x| &start > x)
-                    .unwrap_or(false)
-            {
-                break;
-            }
-
-            subtree_index = tree_utils::parent(subtree_index);
-        }
+        let subtree_index = self.estimator.guess(start, stop, &self.nodes);
 
         self.scan(
             subtree_index,
@@ -151,11 +133,6 @@ where
                 }
             }
         }
-    }
-
-    #[inline(always)]
-    fn min_beg(&self, subtree: usize) -> Option<&P> {
-        Some(self.nodes[tree_utils::leftmost_leaf(subtree)].start())
     }
 
     #[cfg(test)]
@@ -297,6 +274,7 @@ mod tests {
 
     /* crate use */
     use rand::Rng as _;
+    use rand::RngCore as _;
     use rand::SeedableRng as _;
 
     /* project use */
@@ -441,15 +419,14 @@ mod tests {
         );
     }
 
-    #[test]
-    fn overlap_affine() {
+    fn _overlap_affine<const N: usize>() {
         let mut data = Vec::new();
 
         for i in (50..1000).step_by(50) {
             data.push(node::Node::new_full(i, i + 50, (i, i + 50), i));
         }
 
-        let intervals = Intervals::<usize, (usize, usize), estimator::Affine<usize, 16>>::new(data);
+        let intervals = Intervals::<usize, (usize, usize), estimator::Affine<usize, N>>::new(data);
 
         assert_eq!(
             intervals.overlap(250, 500),
@@ -459,8 +436,17 @@ mod tests {
                 &(350, 400),
                 &(400, 450),
                 &(450, 500)
-            ]
+            ],
+            "intervals overlap_affine check N = {}",
+            N
         );
+    }
+
+    #[test]
+    fn overlap_affine() {
+        seq_macro::seq!(I in 1..128 {
+            _overlap_affine::<I>();
+        });
     }
 
     #[test]
@@ -521,9 +507,10 @@ mod tests {
         );
     }
 
-    #[test]
-    fn iit_equal_iitii_entropy_seed() {
+    fn _iit_equal_iitii_entropy_seed<const N: usize>() {
         let mut rng = rand::rngs::StdRng::from_entropy();
+        let seed = rng.next_u64();
+        let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
 
         let pos_range = 0..100_000;
         let range_len = 0..200;
@@ -539,12 +526,24 @@ mod tests {
             .collect::<Vec<node::Node<usize, (usize, usize)>>>();
 
         let lazy = Intervals::<usize, (usize, usize), estimator::Lazy>::new(nodes.clone());
-
         let affine = Intervals::<usize, (usize, usize), estimator::Affine<usize, 16>>::new(nodes);
 
         let a = rng.gen_range(pos_range.clone());
         let b = a + rng.gen_range(0..2000);
 
-        assert_eq!(lazy.overlap(a, b), affine.overlap(a, b))
+        assert_eq!(
+            lazy.overlap(a, b),
+            affine.overlap(a, b),
+            "interval iit_equal_iitii_entropy_seed seed: {} N: {}",
+            seed,
+            N,
+        )
+    }
+
+    #[test]
+    fn iit_equal_iitii_entropy_seed() {
+        seq_macro::seq!(I in 1..128 {
+            _iit_equal_iitii_entropy_seed::<I>();
+        });
     }
 }

@@ -56,6 +56,7 @@ pub struct Affine<P, const N: usize> {
     min_position: P,
     domain_size: usize,
     max_index: usize,
+    outside_max_end: Vec<P>,
 }
 
 impl<P, const N: usize> Affine<P, N>
@@ -63,9 +64,10 @@ where
     P: std::default::Default
         + std::fmt::Debug
         + std::marker::Copy
+        + std::cmp::PartialOrd
         + num_traits::AsPrimitive<f64>
         + num_traits::AsPrimitive<usize>
-        + std::cmp::PartialOrd,
+        + num_traits::Bounded,
     f64: num_traits::AsPrimitive<P>,
 {
     #[inline(always)]
@@ -94,8 +96,21 @@ where
         }
     }
 
-    fn level2affine<O>(
-        data: &[node::Node<P, O>],
+    fn outside_min_beg<O>(&self, index: usize, nodes: &[node::Node<P, O>]) -> P {
+        let rightmost = tree_utils::rightmost_leaf(index);
+        let leftmost = tree_utils::leftmost_leaf(index);
+
+        if leftmost > 0 && nodes[leftmost - 1].start() == nodes[index].start() {
+            *nodes[index].start()
+        } else if rightmost < nodes.len() - 1 {
+            *nodes[rightmost + 1].start()
+        } else {
+            num_traits::Bounded::max_value()
+        }
+    }
+
+    fn level2affine(
+        outside_max_end: &[P],
         target: &[(f64, f64)],
         level: usize,
         tree_depth: usize,
@@ -109,7 +124,7 @@ where
                     local_a,
                     local_b,
                     <f64 as num_traits::AsPrimitive<P>>::as_(*begin),
-                    data.len(),
+                    outside_max_end.len(),
                 );
 
                 let error = estimate_index.abs_diff(*index as usize) / (1 << level);
@@ -119,8 +134,8 @@ where
                 } else {
                     0
                 };
-                let overlap_penality = if data[estimate_index].max_end()
-                    > &<f64 as num_traits::AsPrimitive<P>>::as_(*begin)
+                let overlap_penality = if outside_max_end[estimate_index]
+                    > <f64 as num_traits::AsPrimitive<P>>::as_(*begin)
                 {
                     1 + tree_depth - level / 2
                 } else {
@@ -140,6 +155,46 @@ where
             (f64::MAX, 0.0, 0.0, level)
         }
     }
+
+    fn outside_max_end<O>(nodes: &[node::Node<P, O>]) -> Vec<P> {
+        let mut max = nodes[0].stop();
+        let running_max_end = nodes
+            .iter()
+            .map(node::Node::stop)
+            .map(|x| {
+                if max < x {
+                    max = x;
+                    max
+                } else {
+                    max
+                }
+            })
+            .cloned()
+            .collect::<Vec<P>>();
+
+        let mut outside_max_end = vec![num_traits::Bounded::min_value(); nodes.len()];
+
+        for (index, node) in nodes.iter().enumerate() {
+            let leftmost = tree_utils::leftmost_leaf(index);
+            if leftmost > 0 {
+                let mut lower_index = leftmost - 1;
+                while nodes[lower_index].start() == node.start() {
+                    if lower_index == 0 {
+                        break;
+                    }
+                    lower_index -= 1;
+                }
+
+                outside_max_end[index] = if nodes[lower_index].start() < node.start() {
+                    running_max_end[lower_index]
+                } else {
+                    num_traits::Bounded::min_value()
+                };
+            }
+        }
+
+        outside_max_end
+    }
 }
 
 #[cfg(not(feature = "parallel"))]
@@ -148,13 +203,14 @@ where
     P: std::default::Default
         + std::fmt::Debug
         + std::marker::Copy
+        + std::cmp::PartialOrd
         + num_traits::AsPrimitive<f64>
         + num_traits::AsPrimitive<usize>
-        + std::cmp::PartialOrd,
+        + num_traits::Bounded,
     f64: num_traits::AsPrimitive<P>,
 {
-    fn compute_domain<O>(
-        data: &[node::Node<P, O>],
+    fn compute_domain(
+        outside_max_end: &[P],
         d2l2bi: &[Vec<Vec<(f64, f64)>>],
         a: &mut [f64; N],
         b: &mut [f64; N],
@@ -172,7 +228,7 @@ where
                     }
 
                     let (avg_cost, local_a, local_b, level) =
-                        Self::level2affine(data, target, level, tree_depth);
+                        Self::level2affine(outside_max_end, target, level, tree_depth);
 
                     if avg_cost < tree_depth as f64 && avg_cost < lowest_cost {
                         lowest_cost = avg_cost;
@@ -192,23 +248,22 @@ where
     P: std::default::Default
         + std::fmt::Debug
         + std::marker::Copy
-        + num_traits::AsPrimitive<f64>
-        + num_traits::AsPrimitive<usize>
         + std::cmp::PartialOrd
         + std::marker::Send
-        + std::marker::Sync,
+        + std::marker::Sync
+        + num_traits::AsPrimitive<f64>
+        + num_traits::AsPrimitive<usize>
+        + num_traits::Bounded,
     f64: num_traits::AsPrimitive<P>,
 {
-    fn compute_domain<O>(
-        data: &[node::Node<P, O>],
+    fn compute_domain(
+        outside_max_end: &[P],
         d2l2bi: &[Vec<Vec<(f64, f64)>>],
         a: &mut [f64; N],
         b: &mut [f64; N],
         levels: &mut [usize; N],
         tree_depth: usize,
-    ) where
-        O: std::marker::Send + std::marker::Sync,
-    {
+    ) {
         for domain in 0..N {
             if let Some((_, local_a, local_b, level)) = AFFINE_TRAIN_LEVEL
                 .par_iter()
@@ -221,7 +276,7 @@ where
                     if level >= tree_depth || target.len() <= 1 {
                         (f64::MAX, 0.0, 0.0, level)
                     } else {
-                        Self::level2affine(data, target, level, tree_depth)
+                        Self::level2affine(outside_max_end, target, level, tree_depth)
                     }
                 })
                 .min_by(|x, y| x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal))
@@ -241,21 +296,22 @@ where
     P: std::default::Default
         + std::fmt::Debug
         + std::marker::Copy
-        + num_traits::AsPrimitive<f64>
-        + num_traits::AsPrimitive<usize>
         + std::cmp::PartialOrd
         + std::marker::Send
-        + std::marker::Sync,
+        + std::marker::Sync
+        + num_traits::AsPrimitive<f64>
+        + num_traits::AsPrimitive<usize>
+        + num_traits::Bounded,
     f64: num_traits::AsPrimitive<P>,
     O: std::marker::Send + std::marker::Sync,
 {
-    fn train(data: &[node::Node<P, O>]) -> Self {
-        let min_position = *data[0].start();
+    fn train(nodes: &[node::Node<P, O>]) -> Self {
+        let min_position = *nodes[0].start();
         let domain_size = 1
-            + (<P as num_traits::AsPrimitive<usize>>::as_(*data[data.len() - 1].start())
+            + (<P as num_traits::AsPrimitive<usize>>::as_(*nodes[nodes.len() - 1].start())
                 - <P as num_traits::AsPrimitive<usize>>::as_(min_position))
                 / N;
-        let tree_depth = data.len().ilog2() as usize;
+        let tree_depth = nodes.len().ilog2() as usize;
 
         let mut levels: [usize; N] = [usize::default(); N];
         let mut a: [f64; N] = [0.0; N];
@@ -263,24 +319,26 @@ where
 
         let mut domain2level2begin_index = vec![
             (0..AFFINE_TRAIN_LEVEL_LEN)
-                .map(|_| Vec::with_capacity(data.len() / N))
+                .map(|_| Vec::with_capacity(nodes.len() / N))
                 .collect::<Vec<_>>();
             N
         ];
-        for index in 0..data.len() {
+        for index in 0..nodes.len() {
             if let Some(level_index) = AFFINE_TRAIN_LEVEL2INDEX[tree_utils::index2level(index)] {
                 domain2level2begin_index
-                    [Self::which_domain(data[index].start(), &min_position, domain_size)]
+                    [Self::which_domain(nodes[index].start(), &min_position, domain_size)]
                     [level_index]
                     .push((
-                        <P as num_traits::AsPrimitive<f64>>::as_(*data[index].start()),
+                        <P as num_traits::AsPrimitive<f64>>::as_(*nodes[index].start()),
                         tree_utils::index2index_in_level(index) as f64,
                     ))
             }
         }
 
+        let outside_max_end = Self::outside_max_end(nodes);
+
         Self::compute_domain(
-            data,
+            &outside_max_end,
             &domain2level2begin_index,
             &mut a,
             &mut b,
@@ -294,20 +352,41 @@ where
             b,
             min_position,
             domain_size,
-            max_index: data.len(),
+            outside_max_end,
+            max_index: nodes.len(),
         }
     }
 
-    fn guess(&self, start: P, _stop: P) -> usize {
+    fn guess(&self, start: P, stop: P, nodes: &[node::Node<P, O>]) -> usize {
         let domain = Self::which_domain(&start, &self.min_position, self.domain_size);
 
-        Self::interpolate(
+        let mut subtree_index = Self::interpolate(
             self.levels[domain],
             self.a[domain],
             self.b[domain],
             start,
             self.max_index,
-        )
+        );
+
+        let root_index = (1usize << nodes.len().ilog2()) - 1;
+
+        while subtree_index != root_index {
+            if subtree_index >= nodes.len() {
+                subtree_index = tree_utils::parent(subtree_index);
+                dbg!(subtree_index);
+                continue;
+            }
+
+            if start > self.outside_max_end[subtree_index]
+                && self.outside_min_beg(subtree_index, nodes) > stop
+            {
+                break;
+            }
+
+            subtree_index = tree_utils::parent(subtree_index);
+        }
+
+        subtree_index
     }
 }
 
@@ -328,11 +407,19 @@ mod tests {
             data.push(node::Node::new_full(i, i + 50, true, i));
         }
 
-        let estimator = Affine::<usize, 4>::train(&data);
+        let truth = vec![
+            15, 15, 15, 15, 15, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9,
+            9, 9, 9, 9, 8,
+        ];
+
+        seq_macro::seq!(N in 1..32 {
+        let estimator = Affine::<usize, N>::train(&data);
 
         assert_eq!(
-            <Affine<usize, 4> as Estimator<usize, bool>>::guess(&estimator, 500, 150),
-            15
-        )
+            <Affine<usize, N> as Estimator<usize, bool>>::guess(&estimator, 500, 150, &data),
+            truth[N],
+                "estimator::affine check N = {}", N);
+
+        });
     }
 }

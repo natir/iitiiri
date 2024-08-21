@@ -20,7 +20,7 @@ impl<P, O> Estimator<P, O> for Lazy {
         }
     }
 
-    fn guess(&self, _start: P, _stop: P) -> usize {
+    fn guess(&self, _start: P, _stop: P, _data: &[node::Node<P, O>]) -> usize {
         self.root_index
     }
 }
@@ -56,11 +56,17 @@ mod tests {
 
         let estimator = Lazy::train(&data);
 
-        assert_eq!(<Lazy as Estimator<i32, bool>>::guess(&estimator, 0, 0), 7);
+        assert_eq!(
+            <Lazy as Estimator<usize, bool>>::guess(&estimator, 0, 0, &data[..]),
+            7
+        );
 
         data.push(node::Node::<usize, bool>::new(0, 0, true));
         let estimator = Lazy::train(&data);
 
-        assert_eq!(<Lazy as Estimator<i32, bool>>::guess(&estimator, 0, 0), 15);
+        assert_eq!(
+            <Lazy as Estimator<usize, bool>>::guess(&estimator, 0, 0, &data[..]),
+            15
+        );
     }
 }

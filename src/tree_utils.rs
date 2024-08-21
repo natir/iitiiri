@@ -54,6 +54,12 @@ pub fn parent(index: usize) -> usize {
 }
 
 #[inline(always)]
+pub fn rightmost_leaf(index: usize) -> usize {
+    let level = index2level(index);
+    index + ((1 << level) - 1)
+}
+
+#[inline(always)]
 pub fn leftmost_leaf(index: usize) -> usize {
     let level = index2level(index);
     index - ((1 << level) - 1)

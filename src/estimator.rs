@@ -20,5 +20,5 @@ pub trait Estimator<P, O> {
     fn train(data: &[node::Node<P, O>]) -> Self;
 
     /// Ask to estimator what is a good start for this request
-    fn guess(&self, start: P, stop: P) -> usize;
+    fn guess(&self, start: P, stop: P, data: &[node::Node<P, O>]) -> usize;
 }
