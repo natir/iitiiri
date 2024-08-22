@@ -2,7 +2,7 @@
 
 Add this in your Cargo.toml
 ```
-iitiiri = { git = "git@github.com:natir/iitiiri.git" }
+iitiiri = { git = "https://github.com/natir/iitiiri.git" }
 ```
 
 Feature:

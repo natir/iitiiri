@@ -16,7 +16,7 @@ This is a reimplementation/huge inspiration of [lh3 cgranges](https://github.com
 
 Add this in your Cargo.toml
 ```
-iitiiri = { git = "git@github.com:natir/iitiiri.git" }
+iitiiri = { git = "https://github.com/natir/iitiiri.git" }
 ```
 
 For information on how to build the different intervals tree, understand their differences and parameters you can consult the [online manual](https://natir.github.io/iitiiri/usage.html) and check the [examples](https://github.com/natir/iitiiri/tree/main/examples).
