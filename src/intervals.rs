@@ -248,12 +248,14 @@ where
         let index_end = self.nodes.len();
         let tree_depth = index_end.ilog2() as usize;
 
+        let mut index2max = Vec::with_capacity(index_end + 1 / 2);
+
         for level in 1..=tree_depth {
             let x = 1 << (level - 1);
             let index_0 = (x << 1) - 1;
             let step = x << 2;
 
-            let index2max: Vec<(usize, P)> = (index_0..index_end)
+            (index_0..index_end)
                 .into_par_iter()
                 .step_by(step)
                 .map(|index| {
@@ -291,7 +293,7 @@ where
                     };
                     (index, std::cmp::max(child, local))
                 })
-                .collect();
+                .collect_into_vec(&mut index2max);
 
             index2max.iter().for_each(|(index, max)| {
                 self.nodes[*index].set_max_end(*max);

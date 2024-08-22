@@ -264,11 +264,13 @@ where
         levels: &mut [usize; N],
         tree_depth: usize,
     ) {
-        let tmp = (0..N)
+        let mut tmp: Vec<(usize, f64, f64, usize)> = Vec::with_capacity(N);
+
+        (0..N)
             .into_par_iter()
             .map(|domain| {
                 if let Some((_, local_a, local_b, level)) = AFFINE_TRAIN_LEVEL
-                    .par_iter()
+                    .iter()
                     .filter(|&&level| AFFINE_TRAIN_LEVEL2INDEX[level].is_some())
                     .map(|&level| {
                         let level_index = AFFINE_TRAIN_LEVEL2INDEX[level].unwrap();
@@ -288,7 +290,7 @@ where
                     unreachable!()
                 }
             })
-            .collect::<Vec<(usize, f64, f64, usize)>>();
+            .collect_into_vec(&mut tmp);
 
         for (domain, local_a, local_b, level) in tmp {
             a[domain] = local_a;
