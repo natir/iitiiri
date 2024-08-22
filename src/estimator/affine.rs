@@ -195,6 +195,33 @@ where
 
         outside_max_end
     }
+
+    fn domain2level2begin_index<O>(
+        nodes: &[node::Node<P, O>],
+        min_position: &P,
+        domain_size: usize,
+    ) -> Vec<Vec<Vec<(f64, f64)>>> {
+        let mut domain2level2begin_index = vec![
+            (0..AFFINE_TRAIN_LEVEL_LEN)
+                .map(|_| Vec::with_capacity(nodes.len() / N))
+                .collect::<Vec<_>>();
+            N
+        ];
+
+        for index in 0..nodes.len() {
+            if let Some(level_index) = AFFINE_TRAIN_LEVEL2INDEX[tree_utils::index2level(index)] {
+                domain2level2begin_index
+                    [Self::which_domain(nodes[index].start(), min_position, domain_size)]
+                    [level_index]
+                    .push((
+                        <P as num_traits::AsPrimitive<f64>>::as_(*nodes[index].start()),
+                        tree_utils::index2index_in_level(index) as f64,
+                    ))
+            }
+        }
+
+        domain2level2begin_index
+    }
 }
 
 #[cfg(not(feature = "parallel"))]
@@ -326,23 +353,8 @@ where
         let mut a: [f64; N] = [0.0; N];
         let mut b: [f64; N] = [0.0; N];
 
-        let mut domain2level2begin_index = vec![
-            (0..AFFINE_TRAIN_LEVEL_LEN)
-                .map(|_| Vec::with_capacity(nodes.len() / N))
-                .collect::<Vec<_>>();
-            N
-        ];
-        for index in 0..nodes.len() {
-            if let Some(level_index) = AFFINE_TRAIN_LEVEL2INDEX[tree_utils::index2level(index)] {
-                domain2level2begin_index
-                    [Self::which_domain(nodes[index].start(), &min_position, domain_size)]
-                    [level_index]
-                    .push((
-                        <P as num_traits::AsPrimitive<f64>>::as_(*nodes[index].start()),
-                        tree_utils::index2index_in_level(index) as f64,
-                    ))
-            }
-        }
+        let domain2level2begin_index =
+            Self::domain2level2begin_index(nodes, &min_position, domain_size);
 
         let outside_max_end = Self::outside_max_end(nodes);
 
@@ -426,7 +438,7 @@ mod tests {
         assert_eq!(
             <Affine<usize, N> as Estimator<usize, bool>>::guess(&estimator, 500, 150, &data),
             truth[N],
-                "estimator::affine check N = {}", N);
+            "estimator::affine check N = {}", N);
 
         });
     }
