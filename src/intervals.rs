@@ -67,17 +67,12 @@ where
 {
     /// Return object of overlap query
     pub fn overlap(&self, start: P, stop: P) -> Vec<&O> {
-        let mut result = Vec::new();
-
         let subtree_index = self.estimator.guess(start, stop, &self.nodes);
+        let level = tree_utils::index2level(subtree_index);
 
-        self.scan(
-            subtree_index,
-            tree_utils::index2level(subtree_index),
-            start,
-            stop,
-            &mut result,
-        );
+        let mut result = Vec::with_capacity(1 << (level / 2)); // divide by 2 seems not too bad
+
+        self.scan(subtree_index, level, start, stop, &mut result);
 
         result
     }
