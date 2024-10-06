@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 
-#include "iitii/iitii.h"
+#include "iitii.h"
 
 template <class Tp>
 inline void black_box(Tp& value) {
@@ -36,13 +36,12 @@ char *parse_bed(char *s, int32_t *st_, int32_t *en_)
 int main(int argc, char* argv[]) {
   p_iitii::builder br;
 
-  std::ifstream annotation(argv[1]);
-  std::ifstream variant(argv[2]);
+  std::ifstream reader(argv[1]);
 
-  if(!annotation.is_open()) throw std::runtime_error("Error in file opening");
+  if(!reader.is_open()) throw std::runtime_error("Error in file opening");
 
   std::string line;
-  while(std::getline(annotation, line)) {
+  while(std::getline(reader, line)) {
     int32_t start, end;
 
     parse_bed(line.data(), &start, &end);
@@ -50,16 +49,6 @@ int main(int argc, char* argv[]) {
     br.add(intpair(start, end));
   }
 
-  size_t domain = std::stoi(argv[3]);
-  p_iitii db = br.build(domain);
-
-  std::vector<const intpair*> results;
-  while(std::getline(annotation, line)) {
-    int32_t start, end;
-
-    parse_bed(line.data(), &start, &end);
-
-    db.overlap(start, end, results);
-    black_box(results);
-  }
+  p_iitii db = br.build(std::stoi(argv[2]));
+  black_box(db);
 }

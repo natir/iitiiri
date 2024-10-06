@@ -1,0 +1,34 @@
+paths:
+  workdir: "workdir"
+  data:
+    gnomad:
+      uri: "https://storage.googleapis.com/gcp-public-data--gnomad/release/2.1.1/vcf/exomes/gnomad.exomes.r2.1.1.sites.2.vcf.bgz"
+    clinvar:
+      uri: "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2024/clinvar_20240730.vcf.gz"
+    hg38:
+      uri: "https://ftp.ensembl.org/pub/release-92/gff3/homo_sapiens/Homo_sapiens.GRCh38.92.gff3.gz"
+    hg001:
+      uri: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/NA12878_HG001/latest/GRCh38/HG001_GRCh38_1_22_v4.2.1_benchmark.vcf.gz"
+    hg002:
+      uri: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/latest/GRCh38/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz"
+    hg003:
+      uri: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG003_NA24149_father/latest/GRCh38/HG003_GRCh38_1_22_v4.2.1_benchmark.vcf.gz"
+    hg004:
+      uri: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG004_NA24143_mother/latest/GRCh38/HG004_GRCh38_1_22_v4.2.1_benchmark.vcf.gz"
+    hg006:
+      uri: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/ChineseTrio/HG006_NA24694_father/latest/GRCh38/HG006_GRCh38_1_22_v4.2.1_benchmark.vcf.gz"
+    hg007:
+      uri: "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/ChineseTrio/HG007_NA24695_mother/latest/GRCh38/HG007_GRCh38_1_22_v4.2.1_benchmark.vcf.gz"
+  dependencies:
+    cgranges:
+      uri: "https://github.com/lh3/cgranges/archive/refs/tags/v0.1.1.tar.gz"
+      version: "0.1.1"
+    iitii:
+      uri: "https://github.com/mlin/iitii/archive/bc049182fc6aecf5b48316bca9bd57785673782d.tar.gz"
+      version: "bc049182fc6aecf5b48316bca9bd57785673782d"
+
+variables:
+  domains: [2, 8, 32, 128, 512, 2048, 8192]
+  threads: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+  types: ["build", "query", "annotate"]
+  binaries: ["cgranges", "iitii", "rust_bio", "iitri", "iitri_parallel", "iitiiri", "iitiiri_parallel"]

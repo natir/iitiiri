@@ -1,0 +1,70 @@
+# Define
+
+# Import section
+import pathlib
+
+
+# Path section
+snakefile_path = pathlib.Path(workflow.basedir)
+
+config_path = snakefile_path / "etcs"
+examples_path = snakefile_path / ".." / ".." / "examples"
+rules_path = snakefile_path / "rules"
+sources_path = snakefile_path / "src"
+
+
+# Variable section
+configfile: config_path / "config.yml"
+workdir: snakefile_path / config["paths"]["workdir"]
+
+bin_path = {"build": [], "query": [], "annotate": []}
+for target in bin_path.keys():
+    for name in config["variables"]["binaries"]:
+        if name.startswith("iitiiri"):
+            for domain in config["variables"]["domains"]:
+                bin_path[target].append(f"bin/{name}_{target}_{domain}")
+        else:
+            bin_path[target].append(f"bin/{name}_{target}")
+
+bin_cmd = {"build": [], "query": [], "annotate": []}
+for target in ["build", "query"]:
+    for name in config["variables"]["binaries"]:
+        if name.startswith("iitiiri"):
+            for domain in config["variables"]["domains"]:
+                bin_cmd[target].append(f"./bin/{name}_{target}_{domain} {{dataset}}")
+        elif name.startswith("iitii"):
+            for domain in config["variables"]["domains"]:
+                bin_cmd[target].append(f"./bin/{name}_{target} {{dataset}} {domain}")
+        else:
+            bin_cmd[target].append(f"./bin/{name}_{target} {{dataset}}")
+
+for name in config["variables"]["binaries"]:
+    if name.startswith("iitiiri"):
+        for domain in config["variables"]["domains"]:
+            bin_cmd["annotate"].append(f"./bin/{name}_annotate_{domain} data/hg38.bed {{dataset}}")
+    elif name.startswith("iitii"):
+        for domain in config["variables"]["domains"]:
+            bin_cmd["annotate"].append(f"./bin/{name}_annotate data/hg38.bed {{dataset}} {domain}")
+    else:
+        bin_cmd["annotate"].append(f"./bin/{name}_annotate data/hg38.bed {{dataset}}")
+
+# Include section
+include: rules_path / "data.smk"
+include: rules_path / "build.smk"
+include: rules_path / "time.smk"
+include: rules_path / "memory.smk"
+include: rules_path / "thread.smk"
+
+# All rule
+target = []
+for types in config["variables"]["types"]:
+    for data in config["paths"]["data"]:
+        target.append(f"time/{types}/{data}.csv")
+
+for data in config["paths"]["data"]:
+    target.append(f"memory/build/{data}.csv")
+    target.append(f"thread/{data}.csv")
+
+rule all:
+    input:
+        target

@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include <time.h>
 
-#include "cgranges/cgranges.h"
+#include "cgranges.h"
 
 char *parse_bed(char *s, int32_t *st_, int32_t *en_)
 {
@@ -32,37 +31,25 @@ inline void black_box(void* value) {
 int main(int argc, char* argv[]) {
   cgranges_t *cr = cr_init();
 
-  FILE* annotation = fopen(argv[1], "r");
+  FILE* reader = fopen(argv[1], "r");
 
-  char *ctg = "2";
+  char *ctg = "1";
   char line[1024];
   char chr[1024];
-  while(fgets(line, 1024, annotation)) {
+  while(fgets(line, 1024, reader)) {
     int32_t start, end;
 
     parse_bed(line, &start, &end);
 
-    cr_add(cr, ctg, start, end, 0);
+    cr_add(cr, ctg, start, end, true);
   }
 
-  fclose(annotation);
+  fclose(reader);
 
   cr_index(cr);
 
-  FILE* variant = fopen(argv[2], "r");
-  int64_t n, *b = 0, max_b = 0;
-  while(fgets(line, 1024, variant)) {
-    int32_t start, end;
+  black_box(cr);
 
-    parse_bed(line, &start, &end);
-
-    n = cr_overlap(cr, "2", start, end, &b, &max_b);
-    black_box(b);
-  }
-
-  free(b);
-
-  fclose(variant);
 
   cr_destroy(cr);
 }

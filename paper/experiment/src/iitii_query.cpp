@@ -1,8 +1,11 @@
 #include <functional>
 #include <fstream>
+#include <random>
 #include <string>
+#include <iostream>
+#include <chrono>
 
-#include "iitii/iitii.h"
+#include "iitii.h"
 
 template <class Tp>
 inline void black_box(Tp& value) {
@@ -49,6 +52,25 @@ int main(int argc, char* argv[]) {
     br.add(intpair(start, end));
   }
 
-  p_iitii db = br.build(std::stoi(argv[2]));
-  black_box(db);
+  size_t domain = std::stoi(argv[2]);
+  p_iitii db = br.build(domain);
+
+  std::mt19937_64 rng;
+  rng.seed(42);
+  std::uniform_int_distribution<> start_gen(0, 200000000);
+  std::uniform_int_distribution<> length_gen(0, 2000);
+  size_t number_query = 1 << 9;
+  std::vector<const intpair*> results;
+
+  for(size_t i = 0; i != number_query; i++) {
+    size_t start = start_gen(rng);
+    size_t length = length_gen(rng);
+
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i != 100; i++) {
+      db.overlap(start, start + length, results);
+      black_box(results);
+    }
+    std::cout<<"iitii_"<<domain<<","<<i<<","<<std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - begin).count()<<std::endl;
+  }
 }

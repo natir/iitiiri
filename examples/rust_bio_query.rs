@@ -1,4 +1,4 @@
-//! Rust-bio tree building
+//! Rust-bio tree query
 
 /* std use */
 use std::io::BufRead as _;

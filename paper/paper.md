@@ -33,8 +33,10 @@ Bedtk method are based on binary search tree (BST), a BST can be construct by so
 
 # Result
 
+
+
 # Acknowledgements
 
-We acknowledge Michael F. Lin, for the quality of the description of its algorithm and its ideas, from which I drew a great deal of inspiration.
+We acknowledge Michael F. Lin, for the quality of the description of its algorithm, its ideas and inspiration.
 
 # References
