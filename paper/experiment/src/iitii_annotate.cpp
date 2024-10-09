@@ -49,12 +49,11 @@ int main(int argc, char* argv[]) {
 
     br.add(intpair(start, end));
   }
-
   size_t domain = std::stoi(argv[3]);
   p_iitii db = br.build(domain);
 
   std::vector<const intpair*> results;
-  while(std::getline(annotation, line)) {
+  while(std::getline(variant, line)) {
     int32_t start, end;
 
     parse_bed(line.data(), &start, &end);
