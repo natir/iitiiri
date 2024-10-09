@@ -4,6 +4,7 @@ tags:
   - Rust
   - IntervalTree
   - Annotation
+  - Variant
 authors:
   - name: Pierre Marijon
     orcid: 0000-0002-6694-6873
@@ -32,6 +33,10 @@ Bedtk[@bedtk] is a C library that adress this question by implement an implicit 
 Bedtk method are based on binary search tree (BST), a BST can be construct by sort array of interval, each node of tree is an element on array and index of element in array can use to infere tree topology.
 
 # Result
+
+To evaluate performance of our implementation I use variant produce by [@hg00_variant], 30/07/2024 clinvar[@clinvar] release and variant of chromosome 2 in gnomad exon version 2.1.1 [@gnomad].
+
+We compare our implementation to bedtk tree struct (cgranges), iitii and rust_bio cgranges reimplementation.
 
 ## Run time and memory usage to build tree
 
