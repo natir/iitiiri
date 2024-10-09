@@ -33,7 +33,11 @@ Bedtk method are based on binary search tree (BST), a BST can be construct by so
 
 # Result
 
+## Run time and memory usage to build tree
 
+## Run time in function of tree size
+
+## Run time in function of query size
 
 # Acknowledgements
 
