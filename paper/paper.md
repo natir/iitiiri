@@ -54,9 +54,11 @@ Node of tree store interval information and `max_end` value that correspond to m
 
 # Result
 
-To evaluate performance of our implementation I use variant produce by [@hg00_variant], 30/07/2024 clinvar[@clinvar] release and variant of chromosome 2 in gnomad exon version 2.1.1 [@gnomad].
+To evaluate performance of my implementation I use variant produce by [@hg00_variant],  clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad] and Ensembl annotation of GRCh38.92.
 
-We compare our implementation to bedtk tree struct (cgranges), iitii and rust_bio cgranges reimplementation.
+I compare my Implicite Interval Tree (*iitri*), to bedtk tree struct (*cgranges*) and rust-bio[@rustbio] bedtk tree struct reimplementation and compare my Implicite Interval Tree Interpolate Index (*iitiiri*) to Michael F. Lin implementation (*iitii*).
+
+A snakemake pipeline to reproduce experiment is available in public repository[^1].
 
 ## Run time and memory usage to build tree
 
@@ -69,3 +71,5 @@ We compare our implementation to bedtk tree struct (cgranges), iitii and rust_bi
 We acknowledge Michael F. Lin, for the quality of the description of its algorithm, its ideas and inspiration.
 
 # References
+
+[^1]: Check paper/experiment/Readme.md file to get instruction on how to reproduce experiment
