@@ -18,7 +18,7 @@ bibliography: paper.bib
 
 # Summary
 
-Intersection searching between sets of intervals is a useful task for many bioinformatics problems, such as finding the regions of interest affected by a variant, or even calculating the coverage of the same type of region.
+Intersection search between sets of intervals is a useful task for many bioinformatics problems, such as finding the regions of interest affected by a variant, or even calculating the coverage of the same type of region.
 
 Several tools already exist to address these issues as bedtools, bedtk and iitii. Iitiiri reuse idea from bedtk and iitii and implements them in the Rust language to take advantage of its parallelization capabilities, to improve performances in building time.
 
@@ -54,7 +54,7 @@ Node of tree store interval information and `max_end` value that correspond to m
 
 # Result
 
-To evaluate performance of my implementation I use variant produce by [@hg00_variant],  clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad] and Ensembl annotation of GRCh38.92.
+To evaluate performance of my implementation I use variant produce by [@hg00_variant],  clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad2.1] and Ensembl annotation of GRCh38.92.
 
 I compare my Implicite Interval Tree (*iitri*), to bedtk tree struct (*cgranges*) and rust-bio[@rustbio] bedtk tree struct reimplementation and compare my Implicite Interval Tree Interpolate Index (*iitiiri*) to Michael F. Lin implementation (*iitii*).
 
