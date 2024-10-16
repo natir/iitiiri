@@ -1,4 +1,17 @@
-# Dependency
+# Generate figure
+
+## Dependency
+
+To generate figure of paper you should have in your PATH:
+- graphviz
+
+```
+dot figure/bst.dot -Tpng > figure/bst.png
+```
+
+# Reproduce experiment
+
+## Dependency
 
 To reproduce these experiment you should have in your PATH:
 - a C complier (call as `cc` in snakemake)
@@ -17,9 +30,10 @@ To reproduce these experiment you should have in your PATH:
 - tar
 - tr
 
-# Reproduce experiment
+## Run experiment
 
 ``
+cd experiment
 snakemake -p -c {number_of_cpu_you_could_allow}
 ``
 
@@ -30,6 +44,6 @@ Result are store in `workdir`:
 - `time` store run time of each algorithm in building, random quering, and annotation task of each algorithm
 - `thread` store run time of `iitri` and `iitiiri` with different number of threads
 
-# Generate figure
+## Generate plot
 
 Open jupyter notebook `figure.ipynb` and run cell.
