@@ -52,6 +52,7 @@ rand          = { version = "0.8", features = ["small_rng"] }
 default = []
 parallel = ["dep:rayon"]
 bench = []
+eval_guess = []
 
 
 [[bench]]
