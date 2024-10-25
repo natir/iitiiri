@@ -381,15 +381,18 @@ where
     fn guess(&self, start: P, stop: P, nodes: &[node::Node<P, O>]) -> usize {
         let domain = Self::which_domain(&start, &self.min_position, self.domain_size);
 
-        let mut subtree_index = Self::interpolate(
-            self.levels[domain],
-            self.a[domain],
-            self.b[domain],
-            start,
-            self.max_index,
-        );
-
         let root_index = (1usize << nodes.len().ilog2()) - 1;
+        let mut subtree_index = if self.levels[domain] != 0 {
+            Self::interpolate(
+                self.levels[domain],
+                self.a[domain],
+                self.b[domain],
+                start,
+                self.max_index,
+            )
+        } else {
+            root_index
+        };
 
         while subtree_index != root_index {
             if subtree_index >= nodes.len() {
