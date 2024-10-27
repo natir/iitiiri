@@ -1,5 +1,5 @@
 ---
-title: 'Iitiiri: '
+title: 'Iitiiri: Implicit Interval Tree with Interpolation Index Rust Implementation'
 tags:
   - Rust
   - IntervalTree
@@ -35,6 +35,7 @@ Bedtk[@bedtk] is a C library that adress this question by implement an implicit 
 Bedtk method are based on binary search tree (BST), a BST can be construct by sort array of interval, each node of tree is an element on array and index of element in array can use to infere tree topology.
 
 If we have an array of $2^{K+1} - 1$ element:
+
 - tree have K + 1 levels
 - level of a node, // TODO
 - left child node index, $index - 2^{level-1}$
@@ -69,7 +70,8 @@ A snakemake pipeline to reproduce experiment is available in public repository[^
 
 # Acknowledgements
 
-We acknowledge Michael F. Lin, for the quality of the description of its algorithm, its ideas and inspiration.
+I acknowledge Michael F. Lin, for the quality of the description of its algorithm and its ideas.
+I'd also like to dedicate this work to my aunt who passed away while I was writing this paper.
 
 # References
 
