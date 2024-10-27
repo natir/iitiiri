@@ -71,7 +71,7 @@ where
         let level = tree_utils::index2level(subtree_index);
 
         #[cfg(feature = "eval_guess")]
-        println!("{}", level);
+        println!("{},guess_level", level);
 
         let mut result = Vec::with_capacity(1 << (level / 2)); // divide by 2 seems not too bad
 

@@ -394,7 +394,15 @@ where
             root_index
         };
 
+        #[cfg(feature = "eval_guess")]
+        let mut correction = 0;
+
         while subtree_index != root_index {
+            #[cfg(feature = "eval_guess")]
+            {
+                correction += 1;
+            }
+
             if subtree_index >= nodes.len() {
                 subtree_index = tree_utils::parent(subtree_index);
                 continue;
@@ -408,6 +416,9 @@ where
 
             subtree_index = tree_utils::parent(subtree_index);
         }
+
+        #[cfg(feature = "eval_guess")]
+        println!("{},guess_correction", correction);
 
         subtree_index
     }

@@ -54,6 +54,7 @@ include: rules_path / "build.smk"
 include: rules_path / "time.smk"
 include: rules_path / "memory.smk"
 include: rules_path / "thread.smk"
+include: rules_path / "affine_effect.smk"
 
 # All rule
 target = []
@@ -64,6 +65,9 @@ for types in config["variables"]["types"]:
 for data in config["paths"]["data"]:
     target.append(f"memory/build/{data}.csv")
     target.append(f"thread/{data}.csv")
+    for domain in config["variables"]["domains"]:
+        target.append(f"affine_effect/{data}_{domain}.csv")
+
 
 rule all:
     input:
