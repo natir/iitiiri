@@ -15,8 +15,18 @@ use crate::tree_utils;
 // - AFFINE_TRAIN_LEVEL_LEN: just a utility const
 // - AFFINE_TRAIN_LEVEL: the list of tree levels where we're going to do the training
 // - AFFINE_TRAIN_LEVEL2INDEX: a lookup table that associates with a tree level its index in AFFINE_TRAIN_LEVEL or None if not present
-const AFFINE_TRAIN_LEVEL_LEN: usize = 9;
-const AFFINE_TRAIN_LEVEL: [usize; AFFINE_TRAIN_LEVEL_LEN] = [0, 1, 2, 4, 7, 12, 20, 33, 54];
+const AFFINE_TRAIN_LEVEL_LEN: usize = 64;
+const AFFINE_TRAIN_LEVEL: [usize; AFFINE_TRAIN_LEVEL_LEN] = {
+    let mut result: [usize; AFFINE_TRAIN_LEVEL_LEN] = [0; AFFINE_TRAIN_LEVEL_LEN];
+
+    let mut i = 0;
+    while i != AFFINE_TRAIN_LEVEL_LEN {
+        result[i] = i;
+        i += 1;
+    }
+
+    result
+};
 const AFFINE_TRAIN_LEVEL2INDEX: [Option<usize>;
     AFFINE_TRAIN_LEVEL[AFFINE_TRAIN_LEVEL_LEN - 1] + 1] = {
     let mut result: [Option<usize>; AFFINE_TRAIN_LEVEL[AFFINE_TRAIN_LEVEL_LEN - 1] + 1] =
@@ -442,7 +452,7 @@ mod tests {
         }
 
         let truth = vec![
-            15, 15, 15, 15, 15, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9,
+            63, 63, 31, 15, 15, 7, 7, 7, 7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9,
             9, 9, 9, 9, 127,
         ];
 
