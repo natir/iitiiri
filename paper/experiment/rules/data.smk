@@ -31,3 +31,15 @@ rule hg38_data:
         cut -f 1,4,5 2> {log.err} | \
         tr '\t' ' ' > {output.bed} 2> {log.err}
         """
+
+rule all_variants:
+    input:
+        variants = lambda _wcd: [f"data/{dataset}.bed" for dataset in config["paths"]["data"]]
+    output:
+        bed = "data/all_variants.bed"
+    log:
+        err = "log/data/all_variants.stderr",
+    shell:
+        """
+        cat {input.variants} 1> {output.bed} 2> {log.err}
+        """

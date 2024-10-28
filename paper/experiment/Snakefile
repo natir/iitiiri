@@ -61,12 +61,18 @@ target = []
 for types in config["variables"]["types"]:
     for data in config["paths"]["data"]:
         target.append(f"time/{types}/{data}.csv")
+    target.append(f"time/{types}/all_variants.csv")
 
 for data in config["paths"]["data"]:
     target.append(f"memory/build/{data}.csv")
+    target.append(f"memory/build/all_variants.csv")
     target.append(f"thread/{data}.csv")
+    target.append(f"thread/all_variants.csv")
     for domain in config["variables"]["domains"]:
         target.append(f"affine_effect/{data}_{domain}.csv")
+
+for domain in config["variables"]["domains"]:
+    target.append(f"affine_effect/all_variants_{domain}.csv")
 
 
 rule all:
