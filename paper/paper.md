@@ -1,6 +1,5 @@
 ---
-title: 'Clairiere a rust implementation of implicit interval tree with interpolation index.
-'
+title: 'Clairiere a rust implementation of implicit interval tree with interpolation index.'
 tags:
   - Rust
   - IntervalTree
@@ -44,7 +43,6 @@ If we have an array of $2^{K+1} - 1$ element:
 - parent node
 - root of tree is at index $2^K - 1$
 
-
 // TODO add plot of BST example
 
 Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes.
@@ -53,21 +51,23 @@ Node of tree store interval information and `max_end` value that correspond to m
 
 ## Interpolate Index building
 
-## Interpolate Index queryng
+## Interpolate Index query
 
 # Result
 
-To evaluate performance of my implementation I use variant produce by [@hg00_variant],  clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad2.1] and Ensembl annotation of GRCh38.92.
+To evaluate performance of my implementation I use variant produce by [@hg00_variant], clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad2.1] and Ensembl annotation of GRCh38.92.
 
 I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*) and rust-bio[@rustbio] bedtk tree struct reimplementation and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
 
-A snakemake pipeline to reproduce experiment is available in public repository[^1].
+A snakemake pipeline to reproduce experiment is available in project repository[^1].
 
 ## Run time and memory usage to build tree
 
 ## Run time in function of tree size
 
 ## Run time in function of query size
+
+## Effect of affine interpolation
 
 # Acknowledgements
 
