@@ -1,4 +1,4 @@
-//! Example that just build an iit from bed
+//! Example that just build a tree from bed
 
 /* std use */
 use std::io::BufRead as _;
@@ -22,12 +22,12 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        nodes.push(iitiiri::Node::new(start, stop, true));
+        nodes.push(clairiere::Node::new(start, stop, true));
 
         line.clear();
     }
 
-    let iit: iitiiri::Iit<usize, bool> = iitiiri::Iit::new(nodes);
+    let tree: clairiere::Tree<usize, bool> = clairiere::Tree::new(nodes);
 
-    criterion::black_box(iit);
+    criterion::black_box(tree);
 }

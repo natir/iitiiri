@@ -9,7 +9,7 @@
 
 # Contributor Guide
 
-- [Dev documentation](doc/iitiiri/index.html)
+- [Dev documentation](doc/clairiere/index.html)
 - [Code Coverage](tarpaulin-report.html)
 - [Contributing](contributing.md)
 - [Code of Conduct](code_of_conduct.md)

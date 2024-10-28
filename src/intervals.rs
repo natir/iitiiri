@@ -482,7 +482,7 @@ mod tests {
     }
 
     #[test]
-    fn iit_equal_iitii() {
+    fn tree_equal_interpolate_tree() {
         let mut rng = rand::rngs::StdRng::seed_from_u64(42);
 
         let pos_range = 0..100_000;
@@ -539,7 +539,7 @@ mod tests {
         );
     }
 
-    fn _iit_equal_iitii_entropy_seed<const N: usize>() {
+    fn _tree_equal_interpolate_tree_entropy_seed<const N: usize>() {
         let mut rng = rand::rngs::StdRng::from_entropy();
         let seed = rng.next_u64();
         let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
@@ -566,16 +566,16 @@ mod tests {
         assert_eq!(
             lazy.overlap(a, b),
             affine.overlap(a, b),
-            "interval iit_equal_iitii_entropy_seed seed: {} N: {}",
+            "interval tree_equal_interpolate_tree_entropy_seed seed: {} N: {}",
             seed,
             N,
         )
     }
 
     #[test]
-    fn iit_equal_iitii_entropy_seed() {
+    fn tree_equal_interpolate_tree_entropy_seed() {
         seq_macro::seq!(I in 1..128 {
-            _iit_equal_iitii_entropy_seed::<I>();
+            _tree_equal_interpolate_tree_entropy_seed::<I>();
         });
     }
 }

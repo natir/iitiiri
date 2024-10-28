@@ -12,13 +12,6 @@ labels: unconfirmed
 <!-- Please provide a Minimal Reproducible Example (MRE) if possible.
      Try to boil down the problem to a few lines of code.
      Your code should run by simply copying and pasting it.
-
-     Example:
-
-     ```
-     cargo install --git https://github.com/natir/iitiiri
-     iitiiri # argument that generate issue
-     ```
 -->
 
 ```
@@ -46,7 +39,7 @@ PASTE TRACEBACK HERE
 
 - Os:
 - Rust version:
-- iitiiri version:
+- clairiere version:
 
 ### Additional context
 <!-- Add any other relevant context about the problem here,

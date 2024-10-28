@@ -12,27 +12,27 @@ for ...something... {
 	let stop: usize = ...
 	let annotations: Annotations = ...
 
-	nodes.push(iitiiri::Node::new(start, stop, annotations));
+	nodes.push(clairiere::Node::new(start, stop, annotations));
 }
 ```
 
-Build interval tree:
+Build classic implicit interval tree:
 ```rust
-let interval_tree: iitiiri::Iit<usize, Annotations> = iitiiri::Iit::new(nodes);
+let interval_tree: clairiere::Tree<usize, Annotations> = clairiere::Tree::new(nodes);
 ```
 
 Build interval tree with interpolation index:
 ```rust
 const NUMBER_OF_DOMAIN: usize = 32;
-let interval_tree: iitiiri::Iitii<usize, Annotations, NUMBER_OF_DOMAIN> = iitiiri::Iitii::new(nodes);
+let interval_tree: clairiere::InterpolateTree<usize, Annotations, NUMBER_OF_DOMAIN> = clairiere::InterpolateTree::new(nodes);
 ```
 
-Query interval tree (work for Iit or Iitii):
+Query interval tree (work for Tree or InterpolateTree):
 ```rust
 let result: Vec<&Annotations> = interval_tree.query(start, stop)
 ```
 
-## Implicit Interval Tree
+## Tree
 
 
 During the building step, we just sort node by start of interval to build an implicit binary tree, and compute for each node the maximal end of interval in child.
@@ -42,9 +42,9 @@ Querying just involves going down the binary tree to find all the intervals that
 You could found many details in [Bedtk publication](https://doi.org/10.1093/bioinformatics/btaa827)
 
 
-## Implicit Interval Tree with Interpolation Index
+## Interpolate Tree
 
-Is same as Iit, but durring building step we split interval in `NUMBER_OF_DOMAIN`, for each domain found an affine function that feet on begin of interval.
+Is same as Tree, but durring building step we split interval in `NUMBER_OF_DOMAIN`, for each domain found an affine function that feet on begin of interval.
 
 Durring quering step we use affine function to guess a node lower than root in tree and save some times.
 
@@ -54,7 +54,7 @@ Durring quering step we use affine function to guess a node lower than root in t
 
 | | build time | query time | memory usage |
 |-|-|-|-|
-| `Iit` | O(n log(n)) | O(n log(n)) | n |
-| `Iitii` | O(n log(n) + C)  | O(n log(n) - C) | n + NUMBER_OF_DOMAIN |
+| `Tree` | O(n log(n)) | O(n log(n)) | n |
+| `InterpolateTree` | O(n log(n) + C)  | O(n log(n) - C) | n + NUMBER_OF_DOMAIN |
 
 n are number of node, and C the effect of guessing subtree match node

@@ -9,5 +9,5 @@ rule affine_effect:
         err = "log/affine_effect/{dataset}_{domain}.stderr"
     shell:
         """
-        IITIIRI_DOMAIN={wildcards.domain} cargo run --release --features eval_guess --example iitiiri_annotate -- {input.data} {input.data} 1> {output.result} 2> {log.err}
+        CLAIRIERE_DOMAIN={wildcards.domain} cargo run --release --features eval_guess --example clairiere_interpolate_annotate -- {input.data} {input.data} 1> {output.result} 2> {log.err}
         """

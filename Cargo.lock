@@ -194,6 +194,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "clairiere"
+version = "0.1.0"
+dependencies = [
+ "atoi",
+ "bio",
+ "criterion",
+ "linreg",
+ "log",
+ "num-traits",
+ "rand",
+ "rayon",
+ "seq-macro",
+ "thiserror",
+]
+
+[[package]]
 name = "clap"
 version = "4.5.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -431,22 +447,6 @@ name = "hermit-abi"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fbf6a919d6cf397374f7dfeeea91d974c7c0a7221d0d0f4f20d859d329e53fcc"
-
-[[package]]
-name = "iitiiri"
-version = "0.1.0"
-dependencies = [
- "atoi",
- "bio",
- "criterion",
- "linreg",
- "log",
- "num-traits",
- "rand",
- "rayon",
- "seq-macro",
- "thiserror",
-]
 
 [[package]]
 name = "indexmap"

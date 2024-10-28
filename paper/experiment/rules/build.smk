@@ -62,69 +62,69 @@ rule rust_bio_bin:
         """
 
 
-rule iitri_bin:
+rule clairiere_bin:
     input:
-        src = examples_path / "iitri_{type}.rs"
+        src = examples_path / "clairiere_{type}.rs"
     output:
-        bin = "bin/iitri_{type}"
+        bin = "bin/clairiere_{type}"
     params:
         examples_path = lambda wcd: examples_path
     log:
-        out = "log/bin/iitri/{type}.stdout",
-        err = "log/bin/iitri/{type}.stderr",
+        out = "log/bin/clairiere/{type}.stdout",
+        err = "log/bin/clairiere/{type}.stderr",
     shell:
         """
-        cargo build --release --example iitri_{wildcards.type} 1> {log.out} 2> {log.err}
-        cp {params.examples_path}/../target/release/examples/iitri_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
+        cargo build --release --example clairiere_{wildcards.type} 1> {log.out} 2> {log.err}
+        cp {params.examples_path}/../target/release/examples/clairiere_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
         """
 
 
-rule iitri_parallel_bin:
+rule clairiere_parallel_bin:
     input:
-        src = examples_path / "iitri_{type}.rs"
+        src = examples_path / "clairiere_{type}.rs"
     output:
-        bin = "bin/iitri_parallel_{type}"
+        bin = "bin/clairiere_parallel_{type}"
     params:
         examples_path = lambda wcd: examples_path
     log:
-        out = "log/bin/iitri/{type}.stdout",
-        err = "log/bin/iitri/{type}.stderr",
+        out = "log/bin/clairiere/{type}.stdout",
+        err = "log/bin/clairiere/{type}.stderr",
     shell:
         """
-        cargo build --release --features parallel --example iitri_{wildcards.type} 1> {log.out} 2> {log.err}
-        cp {params.examples_path}/../target/release/examples/iitri_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
+        cargo build --release --features parallel --example clairiere_{wildcards.type} 1> {log.out} 2> {log.err}
+        cp {params.examples_path}/../target/release/examples/clairiere_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
         """
 
 
-rule iitiiri_bin:
+rule clairiere_interpolate_bin:
     input:
-        src = examples_path / "iitiiri_{type}.rs"
+        src = examples_path / "clairiere_interpolate_{type}.rs"
     output:
-        bin = "bin/iitiiri_{type}_{domain}"
+        bin = "bin/clairiere_interpolate_{type}_{domain}"
     params:
         examples_path = lambda wcd: examples_path
     log:
-        out = "log/bin/iitiiri/{type}_{domain}.stdout",
-        err = "log/bin/iitiiri/{type}_{domain}.stderr",
+        out = "log/bin/clairiere_interpolate/{type}_{domain}.stdout",
+        err = "log/bin/clairiere_interpolate/{type}_{domain}.stderr",
     shell:
         """
-        IITIIRI_DOMAIN={wildcards.domain} cargo build --release --example iitiiri_{wildcards.type} 1> {log.out} 2> {log.err}
-        cp {params.examples_path}/../target/release/examples/iitiiri_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
+        CLAIRIERE_DOMAIN={wildcards.domain} cargo build --release --example clairiere_interpolate_{wildcards.type} 1> {log.out} 2> {log.err}
+        cp {params.examples_path}/../target/release/examples/clairiere_interpolate_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
         """
 
 
-rule iitiiri_parallel_bin:
+rule clairiere_interpolate_parallel_bin:
     input:
-        src = examples_path / "iitiiri_{type}.rs"
+        src = examples_path / "clairiere_interpolate_{type}.rs"
     output:
-        bin = "bin/iitiiri_parallel_{type}_{domain}"
+        bin = "bin/clairiere_interpolate_parallel_{type}_{domain}"
     params:
         examples_path = lambda wcd: examples_path
     log:
-        out = "log/bin/iitiiri/{type}_{domain}.stdout",
-        err = "log/bin/iitiiri/{type}_{domain}.stderr",
+        out = "log/bin/clairiere_interpolate/{type}_{domain}.stdout",
+        err = "log/bin/clairiere_interpolate/{type}_{domain}.stderr",
     shell:
         """
-        IITIIRI_DOMAIN={wildcards.domain} cargo build --release --features parallel --example iitiiri_{wildcards.type} 1> {log.out} 2> {log.err}
-        cp {params.examples_path}/../target/release/examples/iitiiri_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
+        CLAIRIERE_DOMAIN={wildcards.domain} cargo build --release --features parallel --example clairiere_interpolate_{wildcards.type} 1> {log.out} 2> {log.err}
+        cp {params.examples_path}/../target/release/examples/clairiere_interpolate_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
         """

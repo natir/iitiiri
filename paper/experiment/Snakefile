@@ -20,7 +20,7 @@ workdir: snakefile_path / config["paths"]["workdir"]
 bin_path = {"build": [], "query": [], "annotate": []}
 for target in bin_path.keys():
     for name in config["variables"]["binaries"]:
-        if name.startswith("iitiiri"):
+        if name.startswith("clairiere_interpolate"):
             for domain in config["variables"]["domains"]:
                 bin_path[target].append(f"bin/{name}_{target}_{domain}")
         else:
@@ -29,7 +29,7 @@ for target in bin_path.keys():
 bin_cmd = {"build": [], "query": [], "annotate": []}
 for target in ["build", "query"]:
     for name in config["variables"]["binaries"]:
-        if name.startswith("iitiiri"):
+        if name.startswith("clairiere_interpolate"):
             for domain in config["variables"]["domains"]:
                 bin_cmd[target].append(f"./bin/{name}_{target}_{domain} {{dataset}}")
         elif name.startswith("iitii"):
@@ -39,7 +39,7 @@ for target in ["build", "query"]:
             bin_cmd[target].append(f"./bin/{name}_{target} {{dataset}}")
 
 for name in config["variables"]["binaries"]:
-    if name.startswith("iitiiri"):
+    if name.startswith("clairiere_interpolate"):
         for domain in config["variables"]["domains"]:
             bin_cmd["annotate"].append(f"./bin/{name}_annotate_{domain} data/hg38.bed {{dataset}}")
     elif name.startswith("iitii"):

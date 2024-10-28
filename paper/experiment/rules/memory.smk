@@ -1,6 +1,6 @@
 memory_build_cmd = []
 for name in config["variables"]["binaries"]:
-    if name.startswith("iitiiri"):
+    if name.startswith("clairiere_interpolate"):
         for domain in config["variables"]["domains"]:
             memory_build_cmd.append(
                 f"/usr/bin/time -f '{name}_build_{domain},%M' ./bin/{name}_build_{domain} {{input}} 2>> {{output}}"
@@ -25,7 +25,7 @@ rule memory:
     params:
         cmd = lambda wcd, input, output: " && ".join([line.format(input=input.data, output=output.result) for line in  memory_build_cmd])
     threads:
-        2**63
+        1
     log:
         out = "log/memory/{type}/{name}.stdout",
         err = "log/memory/{type}/{name}.stderr",

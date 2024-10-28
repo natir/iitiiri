@@ -1,7 +1,7 @@
 hyperfine_name_time = {"build":[], "annotate":[]}
 for target in hyperfine_name_time:
     for name in config["variables"]["binaries"]:
-        if name.startswith("iitiiri"):
+        if name.startswith("clairiere_interpolate"):
             for domain in config["variables"]["domains"]:
                 hyperfine_name_time[target].append(f"-n {name}_{target}_{domain}")
         elif name.startswith("iitii"):

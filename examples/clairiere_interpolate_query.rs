@@ -1,4 +1,4 @@
-//! Example that just build an iit from bed
+//! Example that just build an interpolate tree from bed
 
 /* std use */
 use std::io::BufRead as _;
@@ -27,7 +27,7 @@ const fn parse_usize(option: Option<&str>) -> usize {
     }
 }
 
-const DOMAIN_NUMBER: usize = parse_usize(std::option_env!("IITIIRI_DOMAIN"));
+const DOMAIN_NUMBER: usize = parse_usize(std::option_env!("CLAIRIERE_DOMAIN"));
 
 fn main() {
     let mut reader =
@@ -44,12 +44,13 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        nodes.push(iitiiri::Node::new(start, stop, true));
+        nodes.push(clairiere::Node::new(start, stop, true));
 
         line.clear();
     }
 
-    let iit: iitiiri::Iitii<usize, bool, DOMAIN_NUMBER> = iitiiri::Iitii::new(nodes);
+    let interpolate_tree: clairiere::InterpolateTree<usize, bool, DOMAIN_NUMBER> =
+        clairiere::InterpolateTree::new(nodes);
 
     let mut rng: rand::rngs::StdRng = rand::SeedableRng::seed_from_u64(42);
 
@@ -64,18 +65,18 @@ fn main() {
 
         let now = std::time::Instant::now();
         for _ in 0..100 {
-            criterion::black_box(iit.overlap(start, start + length));
+            criterion::black_box(interpolate_tree.overlap(start, start + length));
         }
         #[cfg(not(feature = "parallel"))]
         println!(
-            "iitiiri_{},{},{}",
+            "clairiere_interpolate_{},{},{}",
             DOMAIN_NUMBER,
             i,
             now.elapsed().as_nanos()
         );
         #[cfg(feature = "parallel")]
         println!(
-            "iitiiri_parallel_{},{},{}",
+            "clairiere_interpolate_parallel_{},{},{}",
             DOMAIN_NUMBER,
             i,
             now.elapsed().as_nanos()

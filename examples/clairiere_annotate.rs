@@ -24,12 +24,12 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        nodes.push(iitiiri::Node::new(start, stop, true));
+        nodes.push(clairiere::Node::new(start, stop, true));
 
         line.clear();
     }
 
-    let iit: iitiiri::Iit<usize, bool> = iitiiri::Iit::new(nodes);
+    let tree: clairiere::Tree<usize, bool> = clairiere::Tree::new(nodes);
 
     while let Ok(bytes) = variants.read_until(b'\n', &mut line) {
         if bytes == 0 {
@@ -39,7 +39,7 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        criterion::black_box(iit.overlap(start, stop));
+        criterion::black_box(tree.overlap(start, stop));
 
         line.clear();
     }

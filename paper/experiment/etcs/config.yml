@@ -31,4 +31,4 @@ variables:
   domains: [2, 8, 32, 128, 512, 2048, 8192]
   threads: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
   types: ["build", "query", "annotate"]
-  binaries: ["cgranges", "iitii", "rust_bio", "iitri", "iitri_parallel", "iitiiri", "iitiiri_parallel"]
+  binaries: ["cgranges", "iitii", "rust_bio", "clairiere", "clairiere_parallel", "clairiere_interpolate", "clairiere_interpolate_parallel"]

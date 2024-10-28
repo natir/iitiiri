@@ -1,4 +1,4 @@
-//! Error definition of iitiiri
+//! Error definition of clairiere crate
 
 /* std use */
 

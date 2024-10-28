@@ -1,24 +1,24 @@
 [package]
-name    = "iitiiri"
+name    = "clairiere"
 version = "0.1.0"
 authors = [
 	"Pierre Marijon <pierre.marijon-ext@aphp.fr>"
 ]
 
-description  = "Implicit Interval Tree with Interpolation Index Rust Implementation"
+description  = "A rust implementation of implicit interval tree with interpolation index."
 edition      = "2021"
 rust-version = "1.67"
 
-homepage      = "https://natir.github.io/iitiiri"
-repository    = "https://github.com/natir/iitiiri"
-documentation = "https://natir.github.io/iitiiri"
+homepage      = "https://natir.github.io/clairiere"
+repository    = "https://github.com/natir/clairiere"
+documentation = "https://natir.github.io/clairiere"
 
 readme       = "Readme.md"
 license-file = "LICENSE"
 
 
 [lib]
-name = "iitiiri"
+name = "clairiere"
 path = "src/lib.rs"
 
 
@@ -56,7 +56,7 @@ eval_guess = []
 
 
 [[bench]]
-name              = "iit_vs_iitii"
+name              = "tree_vs_interpolate_tree"
 required-features = ["bench"]
 harness           = false
 

@@ -1,4 +1,4 @@
-//! Example that just build an iit from bed
+//! Example that just build a tree from bed
 
 /* std use */
 use std::io::BufRead as _;
@@ -23,12 +23,12 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        nodes.push(iitiiri::Node::new(start, stop, true));
+        nodes.push(clairiere::Node::new(start, stop, true));
 
         line.clear();
     }
 
-    let iit: iitiiri::Iit<usize, bool> = iitiiri::Iit::new(nodes);
+    let tree: clairiere::Tree<usize, bool> = clairiere::Tree::new(nodes);
 
     let mut rng: rand::rngs::SmallRng = rand::SeedableRng::seed_from_u64(42);
 
@@ -43,11 +43,11 @@ fn main() {
 
         let now = std::time::Instant::now();
         for _ in 0..100 {
-            criterion::black_box(iit.overlap(start, start + length));
+            criterion::black_box(tree.overlap(start, start + length));
         }
         #[cfg(not(feature = "parallel"))]
-        println!("iitri,{},{}", i, now.elapsed().as_nanos());
+        println!("clairiere,{},{}", i, now.elapsed().as_nanos());
         #[cfg(feature = "parallel")]
-        println!("iitri_parallel,{},{}", i, now.elapsed().as_nanos());
+        println!("clairiere_parallel,{},{}", i, now.elapsed().as_nanos());
     }
 }

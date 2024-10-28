@@ -42,7 +42,7 @@ Only compilation and data generation are run in parallel.
 Result are store in `workdir`:
 - `memory` store memory usage of each algorithm for building interval tree
 - `time` store run time of each algorithm in building, random quering, and annotation task of each algorithm
-- `thread` store run time of `iitri` and `iitiiri` with different number of threads
+- `thread` store run time of `clairiere::Tree` and `clairiere::InterpolateTree` with different number of threads
 
 ## Generate plot
 

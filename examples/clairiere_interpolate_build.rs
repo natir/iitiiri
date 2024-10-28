@@ -1,4 +1,4 @@
-//! Example that build an interval tree from first file and use the second file to query
+//! Example that just build an Interpolate Tree from bed
 
 /* std use */
 use std::io::BufRead as _;
@@ -26,17 +26,15 @@ const fn parse_usize(option: Option<&str>) -> usize {
     }
 }
 
-const DOMAIN_NUMBER: usize = parse_usize(std::option_env!("IITIIRI_DOMAIN"));
+const DOMAIN_NUMBER: usize = parse_usize(std::option_env!("CLAIRIERE_DOMAIN"));
 
 fn main() {
-    let mut annotations =
+    let mut reader =
         std::io::BufReader::new(std::fs::File::open(std::env::args().nth(1).unwrap()).unwrap());
-    let mut variants =
-        std::io::BufReader::new(std::fs::File::open(std::env::args().nth(2).unwrap()).unwrap());
 
     let mut nodes = Vec::new();
     let mut line = Vec::new();
-    while let Ok(bytes) = annotations.read_until(b'\n', &mut line) {
+    while let Ok(bytes) = reader.read_until(b'\n', &mut line) {
         if bytes == 0 {
             break;
         }
@@ -45,23 +43,13 @@ fn main() {
         let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
         let stop = atoi::atoi(split.next().unwrap()).unwrap();
 
-        nodes.push(iitiiri::Node::new(start, stop, true));
+        nodes.push(clairiere::Node::new(start, stop, true));
 
         line.clear();
     }
 
-    let iitii: iitiiri::Iitii<usize, bool, DOMAIN_NUMBER> = iitiiri::Iitii::new(nodes);
+    let interpolate_tree: clairiere::InterpolateTree<usize, bool, DOMAIN_NUMBER> =
+        clairiere::InterpolateTree::new(nodes);
 
-    while let Ok(bytes) = variants.read_until(b'\n', &mut line) {
-        if bytes == 0 {
-            break;
-        }
-        let mut split = line.split(|x| x == &b' ');
-        let start = atoi::atoi(split.nth(1).unwrap()).unwrap();
-        let stop = atoi::atoi(split.next().unwrap()).unwrap();
-
-        criterion::black_box(iitii.overlap(start, stop));
-
-        line.clear();
-    }
+    criterion::black_box(interpolate_tree);
 }

@@ -23,5 +23,5 @@ pub use estimator::Lazy;
 pub use intervals::Intervals;
 pub use node::Node;
 
-pub type Iit<P, O> = Intervals<P, O, estimator::Lazy>;
-pub type Iitii<P, O, const N: usize> = Intervals<P, O, estimator::Affine<P, N>>;
+pub type Tree<P, O> = Intervals<P, O, estimator::Lazy>;
+pub type InterpolateTree<P, O, const N: usize> = Intervals<P, O, estimator::Affine<P, N>>;

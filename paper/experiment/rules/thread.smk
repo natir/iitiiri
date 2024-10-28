@@ -1,8 +1,8 @@
-binary = ["iitri", "iitri_parallel", "iitiiri", "iitiiri_parallel"]
+binary = ["clairiere", "clairiere_parallel", "clairiere_interpolate", "clairiere_interpolate_parallel"]
 
 thread_path = []
 for name in binary:
-    if name.startswith("iitiiri"):
+    if name.startswith("clairiere_interpolate"):
         for domain in config["variables"]["domains"]:
             thread_path.append(f"bin/{name}_build_{domain}")
     else:
@@ -10,7 +10,7 @@ for name in binary:
 
 thread_cmd = []
 for name in binary:
-    if name.startswith("iitiiri"):
+    if name.startswith("clairiere_interpolate"):
         for domain in config["variables"]["domains"]:
             if name.endswith("parallel"):
                 for thread in config["variables"]["threads"]:
@@ -26,7 +26,7 @@ for name in binary:
 
 hyperfine_name = []
 for name in binary:
-    if name.startswith("iitiiri"):
+    if name.startswith("clairiere_interpolate"):
         for domain in config["variables"]["domains"]:
             if name.endswith("parallel"):
                 for thread in config["variables"]["threads"]:
