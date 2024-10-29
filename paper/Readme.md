@@ -3,10 +3,10 @@
 ## Dependency
 
 To generate figure of paper you should have in your PATH:
-- graphviz
+- magick
 
 ```
-dot figure/bst.dot -Tpng > figure/bst.png
+magick figure/bst.svg figure/bst.png
 ```
 
 # Reproduce experiment

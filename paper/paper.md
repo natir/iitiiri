@@ -43,7 +43,7 @@ If we have an array of $2^{K+1} - 1$ element:
 - parent node
 - root of tree is at index $2^K - 1$
 
-// TODO add plot of BST example
+![An example of binary search tree of ten intervals](figure/bst.png)
 
 Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes.
 
