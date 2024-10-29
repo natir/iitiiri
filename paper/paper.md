@@ -43,7 +43,7 @@ If we have an array of $2^{K+1} - 1$ element:
 - parent node
 - root of tree is at index $2^K - 1$
 
-![An example of binary search tree of ten intervals](figure/bst.png)
+![An example of binary search tree of ten intervals](paper/figure/bst.png){label="bst"}
 
 Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes.
 
@@ -63,11 +63,19 @@ A snakemake pipeline to reproduce experiment is available in project repository[
 
 ## Run time and memory usage to build tree
 
+
+
 ## Run time in function of tree size
 
 ## Run time in function of query size
 
 ## Effect of affine interpolation
+
+In previous section we see increasing number of domain haven't a clear impact on run time. To check behavior of this algorithm we add a conditional compilation to get at which level estimator guess and if the guess algorithm must perform a correction and how .
+
+![How number of domain impact estimator metrics.](paper/figure/effect_affine_interpolation){label="effect_affine_interpolation"}
+
+As we can see in figure \ref{effect_affine_interpolation} with more domain prediction level is more near to leaf and correction level seems to same.
 
 # Acknowledgements
 
