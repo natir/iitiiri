@@ -43,9 +43,9 @@ If we have an array of $2^{K+1} - 1$ element:
 - parent node
 - root of tree is at index $2^K - 1$
 
-![An example of binary search tree of ten intervals](paper/figure/bst.png){label="bst"}
+![An example of binary search tree of ten intervals](figure/bst.png){label="bst"}
 
-Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes.
+Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes. Figure \ref{bst} show an example of BST with node tree struct and corresponding array.
 
 ## Tree quering
 
@@ -57,12 +57,11 @@ Node of tree store interval information and `max_end` value that correspond to m
 
 To evaluate performance of my implementation I use variant produce by [@hg00_variant], clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad2.1] and Ensembl annotation of GRCh38.92.
 
-I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*) and rust-bio[@rustbio] bedtk tree struct reimplementation and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
+I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*), to rust-bio[@rustbio] bedtk tree struct reimplementation and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
 
 A snakemake pipeline to reproduce experiment is available in project repository[^1].
 
 ## Run time and memory usage to build tree
-
 
 
 ## Run time in function of tree size
@@ -73,12 +72,13 @@ A snakemake pipeline to reproduce experiment is available in project repository[
 
 In previous section we see increasing number of domain haven't a clear impact on run time. To check behavior of this algorithm we add a conditional compilation to get at which level estimator guess and if the guess algorithm must perform a correction and how .
 
-![How number of domain impact estimator metrics.](paper/figure/effect_affine_interpolation){label="effect_affine_interpolation"}
+![How number of domain impact estimator metrics.](figure/effect_affine_interpolation){label="effect_affine_interpolation"}
 
 As we can see in figure \ref{effect_affine_interpolation} with more domain prediction level is more near to leaf and correction level seems to same.
 
 # Acknowledgements
 
+I would like to thank my brother for the beautiful name he found for this crate.
 I acknowledge Michael F. Lin, for the quality of the description of its algorithm and its ideas.
 I'd also like to dedicate this work to my aunt who passed away while I was writing this paper.
 
