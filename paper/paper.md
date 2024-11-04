@@ -37,13 +37,13 @@ Bedtk method are based on binary search tree (BST), a BST can be construct by so
 If we have an array of $2^{K+1} - 1$ element:
 
 - tree have K + 1 levels
-- level of a node, // TODO
+- level of a node, trailing one in binary representation of index
 - left child node index, $index - 2^{level-1}$
 - right child node index, $index + 2^{level-1}$
 - parent node
 - root of tree is at index $2^K - 1$
 
-![An example of binary search tree of ten intervals](figure/bst.png){label="bst"}
+![A binary search tree build from array of interval. Nodes are store in array tree representation are build from index of node, the most right node label as imaginary are just present in tree structure and not alocate in array. Node struct store range (in upper part) and the `max_end` value (in lower part).](figure/bst.png){label="bst"}
 
 Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes. Figure \ref{bst} show an example of BST with node tree struct and corresponding array.
 
