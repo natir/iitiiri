@@ -8,7 +8,7 @@
 
 #[inline(always)]
 pub fn index2level(index: usize) -> usize {
-    (!(index as u64)).trailing_zeros() as usize
+    index.trailing_ones() as usize
 }
 
 #[inline(always)]

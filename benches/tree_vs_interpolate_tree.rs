@@ -28,7 +28,7 @@ pub fn build(c: &mut criterion::Criterion) {
         .collect::<Vec<node::Node<usize, (usize, usize)>>>();
 
     g.bench_function("iit", |b| {
-        b.iter(|| criterion::black_box(clairiere::tree::new(nodes.clone())))
+        b.iter(|| criterion::black_box(clairiere::Tree::new(nodes.clone())))
     });
 
     seq_macro::seq!(I in 0..6 {
@@ -61,7 +61,7 @@ pub fn overlap(c: &mut criterion::Criterion) {
     let start = 50_000;
     let stop = start + 500;
 
-    let iit = clairiere::tree::new(nodes.clone());
+    let iit = clairiere::Tree::new(nodes.clone());
 
     g.bench_function("iit", |b| {
         b.iter(|| criterion::black_box(iit.overlap(start, stop)))
