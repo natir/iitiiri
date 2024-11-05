@@ -60,9 +60,9 @@ const AFFINE_TRAIN_LEVEL2INDEX: [Option<usize>;
 
 /// An Estimator try guess subtree to search by build part affine function
 pub struct Affine<P, const N: usize> {
-    levels: [usize; N],
-    a: [f64; N],
-    b: [f64; N],
+    levels: [Option<usize>; N],
+    a: [Option<f64>; N],
+    b: [Option<f64>; N],
     min_position: P,
     domain_size: usize,
     max_index: usize,
@@ -124,7 +124,7 @@ where
         target: &[(f64, f64)],
         level: usize,
         tree_depth: usize,
-    ) -> (f64, f64, f64, usize) {
+    ) -> (f64, Option<f64>, Option<f64>, Option<usize>) {
         if let Ok((local_a, local_b)) = linreg::linear_regression_of::<f64, f64, f64>(target) {
             // calculate estimate of search cost (average over all domain points)
             let mut cost: usize = 0;
@@ -157,12 +157,12 @@ where
             let avg_cost = cost as f64 / AFFINE_TRAIN_LEVEL_LEN as f64;
 
             if avg_cost < tree_depth as f64 {
-                (avg_cost, local_a, local_b, level)
+                (avg_cost, Some(local_a), Some(local_b), Some(level))
             } else {
-                (avg_cost, 0.0, 0.0, level)
+                (avg_cost, None, None, None)
             }
         } else {
-            (f64::MAX, 0.0, 0.0, level)
+            (f64::MAX, None, None, None)
         }
     }
 
@@ -249,9 +249,9 @@ where
     fn compute_domain(
         outside_max_end: &[P],
         d2l2bi: &[Vec<Vec<(f64, f64)>>],
-        a: &mut [f64; N],
-        b: &mut [f64; N],
-        levels: &mut [usize; N],
+        a: &mut [Option<f64>; N],
+        b: &mut [Option<f64>; N],
+        levels: &mut [Option<usize>; N],
         tree_depth: usize,
     ) {
         for domain in 0..N {
@@ -296,12 +296,12 @@ where
     fn compute_domain(
         outside_max_end: &[P],
         d2l2bi: &[Vec<Vec<(f64, f64)>>],
-        a: &mut [f64; N],
-        b: &mut [f64; N],
-        levels: &mut [usize; N],
+        a: &mut [Option<f64>; N],
+        b: &mut [Option<f64>; N],
+        levels: &mut [Option<usize>; N],
         tree_depth: usize,
     ) {
-        let mut tmp: Vec<(usize, f64, f64, usize)> = Vec::with_capacity(N);
+        let mut tmp: Vec<(usize, Option<f64>, Option<f64>, Option<usize>)> = Vec::with_capacity(N);
 
         (0..N)
             .into_par_iter()
@@ -315,7 +315,7 @@ where
                         let target = &d2l2bi[domain][level_index];
 
                         if level >= tree_depth || target.len() <= 1 {
-                            (f64::MAX, 0.0, 0.0, level)
+                            (f64::MAX, None, None, None)
                         } else {
                             Self::level2affine(outside_max_end, target, level, tree_depth)
                         }
@@ -359,9 +359,9 @@ where
                 / N;
         let tree_depth = nodes.len().ilog2() as usize;
 
-        let mut levels: [usize; N] = [usize::default(); N];
-        let mut a: [f64; N] = [0.0; N];
-        let mut b: [f64; N] = [0.0; N];
+        let mut levels = [None; N];
+        let mut a = [None; N];
+        let mut b = [None; N];
 
         let domain2level2begin_index =
             Self::domain2level2begin_index(nodes, &min_position, domain_size);
@@ -392,14 +392,10 @@ where
         let domain = Self::which_domain(&start, &self.min_position, self.domain_size);
 
         let root_index = (1usize << nodes.len().ilog2()) - 1;
-        let mut subtree_index = if self.levels[domain] != 0 {
-            Self::interpolate(
-                self.levels[domain],
-                self.a[domain],
-                self.b[domain],
-                start,
-                self.max_index,
-            )
+        let mut subtree_index = if let (Some(level), Some(a), Some(b)) =
+            (self.levels[domain], self.a[domain], self.b[domain])
+        {
+            Self::interpolate(level, a, b, start, self.max_index)
         } else {
             root_index
         };
@@ -453,7 +449,7 @@ mod tests {
 
         let truth = vec![
             63, 63, 31, 15, 15, 7, 7, 7, 7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 127,
+            9, 9, 9, 9, 8,
         ];
 
         seq_macro::seq!(N in 1..32 {
