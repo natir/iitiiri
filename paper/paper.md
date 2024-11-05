@@ -40,7 +40,7 @@ If we have an array of $2^{K+1} - 1$ element:
 - level of a node, trailing one in binary representation of index
 - left child node index, $index - 2^{level-1}$
 - right child node index, $index + 2^{level-1}$
-- parent node
+- parent node, $index \pm 2^{level}$
 - root of tree is at index $2^K - 1$
 
 ![A binary search tree build from array of interval. Nodes are store in array tree representation are build from index of node, the most right node label as imaginary are just present in tree structure and not alocate in array. Node struct store range (in upper part) and the `max_end` value (in lower part).](figure/bst.png){label="bst"}
@@ -50,6 +50,11 @@ Node of tree store interval information and `max_end` value that correspond to m
 ## Tree quering
 
 ## Interpolate Index building
+
+Interpolate index reuse same structure as bst present earlier, with some adition.
+Array are divide in $N$ domain, for each domain and each level clairiere compute an affine function that fit start of each nodes of domain at a specific level the affine function with the lowest error rate for all nodes of specific domain are kept.
+
+This affine function determines a sub-tree closer to the query than the root of the tree. Even if the affine function minimizes the error, the index estimate may choose a sub-tree that doesn't include all the intervals that overlap with the query. We therefore need to add an equivalent to the `max_end` value, the `outside_max_end`, to determine whether the next sub-tree could share an overlap with the query.
 
 ## Interpolate Index query
 
