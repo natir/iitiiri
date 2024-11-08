@@ -37,17 +37,19 @@ Bedtk method are based on binary search tree (BST), a BST can be construct by so
 If we have an array of $2^{K+1} - 1$ element:
 
 - tree have K + 1 levels
-- level of a node, trailing one in binary representation of index
-- left child node index, $index - 2^{level-1}$
-- right child node index, $index + 2^{level-1}$
-- parent node, $index \pm 2^{level}$
 - root of tree is at index $2^K - 1$
+- level of a node: trailing one in binary representation of index
+- left child node index: $index - 2^{level-1}$
+- right child node index: $index + 2^{level-1}$
+- parent node index: $index \pm 2^{level}$
 
-![A binary search tree build from array of interval. Nodes are store in array tree representation are build from index of node, the most right node label as imaginary are just present in tree structure and not alocate in array. Node struct store range (in upper part) and the `max_end` value (in lower part).](figure/bst.png){label="bst"}
+![A binary search tree build from array of interval. Nodes are store in array tree representation are build from index of node, the most right node label as imaginary are just present in tree structure and not alocate in array. Node struct store range (in upper part) and the `max_end` value (in lower part).]{label="fig_bst"}(figure/bst.png)
 
-Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes. Figure \ref{bst} show an example of BST with node tree struct and corresponding array.
+Node of tree store interval information and `max_end` value that correspond to maximal end of interval in subtree of this nodes. Figure \ref{fig_bst} show an example of BST with node tree struct and corresponding array.
 
-## Tree quering
+## Tree quering \label{sec_tree_quering}
+
+
 
 ## Interpolate Index building
 
@@ -58,16 +60,17 @@ This affine function determines a sub-tree closer to the query than the root of 
 
 ## Interpolate Index query
 
+For interpolate index quering we use exactly same algorithm as describe in section \ref{sec_tree_quering} but applying it to the sub-tree whose node is chosen by the affine function of the query domain.
+
 # Result
 
 To evaluate performance of my implementation I use variant produce by [@hg00_variant], clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad2.1] and Ensembl annotation of GRCh38.92.
 
-I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*), to rust-bio[@rustbio] bedtk tree struct reimplementation and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
+I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*), to rust-bio[@rustbio] bedtk tree struct reimplementation (*rust-bio*) and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
 
 A snakemake pipeline to reproduce experiment is available in project repository[^1].
 
 ## Run time and memory usage to build tree
-
 
 ## Run time in function of tree size
 
