@@ -20,7 +20,7 @@ bibliography: paper.bib
 
 Intersection search between sets of intervals is a useful task for many bioinformatics problems, such as finding the regions of interest affected by a variant, or even calculating the coverage of the same type of region.
 
-Several tools already exist to address these issues as bedtools, bedtk and iitii. Clairiere reuse idea from bedtk and iitii and implements them in the Rust language to take advantage of its parallelization capabilities, to improve performances in building time.
+Several tools already exist to address these issues as bedtools, bedtk, coitrees and iitii. Clairiere reuse idea from bedtk and iitii and implements them in the Rust language to take advantage of its parallelization capabilities, to improve performances in building time.
 
 # Statement of need
 
@@ -66,7 +66,7 @@ For interpolate index quering we use exactly same algorithm as describe in secti
 
 To evaluate performance of my implementation I use variant produce by [@hg00_variant], clinvar[@clinvar] release 30/07/2024 and variant of chromosome 2 of gnomad exon version 2.1.1 [@gnomad2.1] and Ensembl annotation of GRCh38.92.
 
-I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*), to rust-bio[@rustbio] bedtk tree struct reimplementation (*rust-bio*) and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
+I compare my Clairiere Tree (*clairiere*), to bedtk tree struct (*cgranges*), to rust-bio[@rustbio] bedtk tree struct reimplementation (*rust-bio*), to coitrees [@coitrees] (*coitrees*) and compare my Implicite Interval Tree Interpolate Index (*clairiere_interpolate*) to Michael F. Lin implementation (*iitii*).
 
 A snakemake pipeline to reproduce experiment is available in project repository[^1].
 

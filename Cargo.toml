@@ -31,7 +31,7 @@ linreg        = { version = "0.2" }
 rayon         = { version = "1", optional = true }
 
 ## Error management
-thiserror     = { version = "1" }
+thiserror     = { version = "2" }
 
 ## Logging management
 log           = { version = "0.4" }
@@ -40,9 +40,10 @@ log           = { version = "0.4" }
 [dev-dependencies]
 ## Benchmark management
 criterion     = { version = "0.5" }
-seq-macro     = { version = "0.3.5" }
-atoi          = { version = "1" }
+seq-macro     = { version = "0.3" }
+atoi          = { version = "2" }
 bio           = { version = "2" }
+coitrees      = { version = "0.4" }
 
 ## Generate value for test
 rand          = { version = "0.8", features = ["small_rng"] }

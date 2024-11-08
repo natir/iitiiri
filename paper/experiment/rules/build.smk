@@ -62,6 +62,23 @@ rule rust_bio_bin:
         """
 
 
+rule coitrees_bin:
+    input:
+        src = examples_path / "coitrees_{type}.rs"
+    output:
+        bin = "bin/coitrees_{type}"
+    params:
+        examples_path = lambda wcd: examples_path
+    log:
+        out = "log/bin/coitrees/{type}.stdout",
+        err = "log/bin/coitrees/{type}.stderr",
+    shell:
+        """
+        cargo build --release --example coitrees_{wildcards.type} 1> {log.out} 2> {log.err}
+        cp {params.examples_path}/../target/release/examples/coitrees_{wildcards.type} {output.bin} 1> {log.out} 2> {log.err}
+        """
+
+
 rule clairiere_bin:
     input:
         src = examples_path / "clairiere_{type}.rs"
