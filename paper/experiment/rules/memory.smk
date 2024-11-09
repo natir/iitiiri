@@ -31,5 +31,6 @@ rule memory:
         err = "log/memory/{type}/{name}.stderr",
     shell:
         """
+        RAYON_NUM_THREADS=4
         echo "command,memory" > {output.result} 2> {log.err} && {params.cmd}
         """

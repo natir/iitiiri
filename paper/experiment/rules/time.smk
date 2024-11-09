@@ -26,6 +26,7 @@ rule time:
         err = "log/time/{target}/{dataset}.stderr",
     shell:
         """
+        RAYON_NUM_THREADS=4
         hyperfine --export-csv {output.result} \
         {params.name} \
         {params.cmd} \
@@ -49,6 +50,9 @@ rule time_query:
         out = "log/time/query/{dataset}.stdout",
         err = "log/time/query/{dataset}.stderr",
     shell:
-        f"echo \"command,index,time\" > {{output.result}} 2> {{log.err}} && {time_query_cmd}"
+        f"""
+        RAYON_NUM_THREADS=14
+        echo \"command,index,time\" > {{output.result}} 2> {{log.err}} && {time_query_cmd}
+        """
 
 ruleorder: time_query > time
