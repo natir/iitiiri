@@ -151,7 +151,7 @@ where
     /// Create a new Intervals struct from a list of node
     pub fn new(mut nodes: Vec<node::Node<P, O>>) -> Self {
         // Sort node
-        nodes.sort();
+        nodes.sort_by_key(|x| *x.start());
 
         let mut obj = Intervals {
             estimator: E::train(&nodes),
@@ -228,7 +228,7 @@ where
     /// Create a new Intervals struct from a list of node
     pub fn new(mut nodes: Vec<node::Node<P, O>>) -> Self {
         // Sort node
-        nodes.par_sort();
+        nodes.par_sort_by_key(|x| *x.start());
 
         let mut obj = Intervals {
             estimator: E::train(&nodes),

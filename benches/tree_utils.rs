@@ -22,9 +22,7 @@ fn filter_by_level(c: &mut criterion::Criterion) {
                     criterion::black_box(
                         values
                             .iter()
-                            .filter(|index| {
-                                clairiere_interpolate::tree_utils::index2level(**index) == *level
-                            })
+                            .filter(|index| clairiere::tree_utils::index2level(**index) == *level)
                             .collect::<Vec<&usize>>(),
                     );
                 })

@@ -67,6 +67,11 @@ name              = "tree_utils"
 required-features = ["bench"]
 harness           = false
 
+[[bench]]
+name              = "sort"
+required-features = ["bench"]
+harness           = false
+
 
 [profile.release]
 lto             = 'thin'
